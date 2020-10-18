@@ -28,10 +28,12 @@ abstract class BaseAdapter(
         anyUpdate()
     }
 
-    fun add(item: MarketItem) =
-        insert(item, indexFor(item.color))
+    fun add(item: MarketItem) {
+        item.color = MarketData.preference(item)
+        return insert(item, indexFor(item.color))
+    }
 
-    fun indexFor(color: Int): Int {
+    private fun indexFor(color: Int): Int {
         var i = data.binarySearch { color - it.color }
         if(i < 0) i = -(i + 1)
         return i
@@ -46,15 +48,6 @@ abstract class BaseAdapter(
 
     open fun move(fromPosition: Int, toPosition: Int) {
         data.add(toPosition, data.removeAt(fromPosition))
-//        when {
-//            fromPosition == toPosition -> return
-//            fromPosition > toPosition ->
-//                for (i in toPosition until fromPosition)
-//                    Collections.swap(MarketData.data, i, i + 1)
-//            else ->
-//                for (i in fromPosition until toPosition)
-//                    Collections.swap(MarketData.data, i, i + 1)
-//        }
         notifyItemMoved(fromPosition, toPosition)
     }
 
@@ -69,13 +62,6 @@ abstract class BaseAdapter(
 //        anyUpdate()
 //    }
 
-    fun addAll(items: Collection<MarketItem>) {
-        items.forEach {
-            it.color = MarketData.colorPreferences.getOrElse(it.name, { it.color })
-            add(it)
-        }
-    }
-
     open fun removeAll(fromPosition: Int, toPosition: Int) {
         (fromPosition until toPosition).forEach { beforeUpdate(it) }
         data.subList(fromPosition, toPosition).clear()
@@ -89,36 +75,36 @@ abstract class BaseAdapter(
     fun removeAll() =
         removeAll(0)
 
-    fun get(index: Int) =
-        MockedItem(this, index)
-
-    data class MockedItem(
-        val adapter: BaseAdapter,
-        val position: Int,
-    ) {
-        var color: Int
-            get() = adapter.data[position].color
-            set(value) = adapter.setColor(position, value)
-
-        var name: String
-            get() = adapter.data[position].name
-            set(value) = adapter.setName(position, value)
-
-        var amount: String
-            get() = adapter.data[position].amount
-            set(value) = adapter.setAmount(position, value)
-
-        var price: Float
-            get() = adapter.data[position].price
-            set(value) = adapter.setPrice(position, value)
-
-        var cost: Float
-            get() = adapter.data[position].cost
-            set(value) = adapter.setCost(position, value)
-
-        val discrepancy: Float
-            get() = adapter.data[position].discrepancy
-    }
+//    fun get(index: Int) =
+//        MockedItem(this, index)
+//
+//    data class MockedItem(
+//        val adapter: BaseAdapter,
+//        val position: Int,
+//    ) {
+//        var color: Int
+//            get() = adapter.data[position].color
+//            set(value) = adapter.setColor(position, value)
+//
+//        var name: String
+//            get() = adapter.data[position].name
+//            set(value) = adapter.setName(position, value)
+//
+//        var amount: String
+//            get() = adapter.data[position].amount
+//            set(value) = adapter.setAmount(position, value)
+//
+//        var price: Float
+//            get() = adapter.data[position].price
+//            set(value) = adapter.setPrice(position, value)
+//
+//        var cost: Float
+//            get() = adapter.data[position].cost
+//            set(value) = adapter.setCost(position, value)
+//
+//        val discrepancy: Float
+//            get() = adapter.data[position].discrepancy
+//    }
 
     open fun setColor(index: Int, color: Int, shouldUpdateView: Boolean = true) {
         if(color == data[index].color)
@@ -145,6 +131,8 @@ abstract class BaseAdapter(
         data[index].name = name
         if(shouldUpdateView)
             getViewHolder(index)?.setName(name)
+
+        setColor(index, MarketData.preference(data[index]))
 
         afterUpdate(index)
         anyUpdate()
@@ -204,11 +192,13 @@ abstract class BaseAdapter(
     open fun anyUpdate() { }
 
     fun paste(s: String) {
-        addAll(s.split(',', '\n')
+        s.split(',', '\n')
             .filter(String::isNotBlank)
-            .map(MarketItem::fromClipboard))
+            .map(MarketItem::fromClipboard)
+            .forEach(::add)
     }
 
     fun toPlainText() =
-        data.filter(MarketItem::isValid).joinToString("\n", transform = MarketItem::toClipboard)
+        data.filter(MarketItem::isValid)
+            .joinToString("\n", transform = MarketItem::toClipboard)
 }
