@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:showIn="@layout/activity_edit">
+
+    <ImageButton
+        style="@style/ib_icon"
+        android:src="@drawable/ic_name"
+        android:contentDescription="@string/name"
+        android:layout_weight="5"
+    />
+
+    <ImageButton
+        style="@style/ib_icon"
+        android:src="@drawable/ic_weight"
+        android:contentDescription="@string/weight_amount"
+        android:layout_weight="1.2"
+    />
+
+    <ImageButton
+        style="@style/ib_icon"
+        android:src="@drawable/ic_coin"
+        android:contentDescription="@string/price"
+        android:layout_weight="1"
+    />
+
+    <ImageButton
+        style="@style/ib_icon"
+        android:src="@drawable/ic_money"
+        android:contentDescription="@string/cost"
+        android:layout_weight="1"
+    />
+
+</LinearLayout>

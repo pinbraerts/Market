@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Market</string>
+    <string name="remove_all_message">Are you sure?</string>
+    <string name="popup_copied">Text has been copied into clipboard</string>
+    <string name="remove_all_title">Clear the list</string>
+    <string name="summary">Summary:</string>
+    <string name="verify">verify</string>
+    <string name="remove_all">remove all</string>
+    <string name="copy">copy</string>
+    <string name="paste">paste</string>
+    <string name="add">add</string>
+    <string name="name">name</string>
+    <string name="price">price</string>
+    <string name="weight_amount">weight/amount</string>
+    <string name="cost">cost</string>
+    <string name="discrepancy">discrepancy</string>
+    <string name="semicolon" translatable="false">:</string>
+    <string name="asterisk" translatable="false">*</string>
+    <string name="zero" translatable="false">0</string>
+    <string name="assign" translatable="false">=</string>
+</resources>

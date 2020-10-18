@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_margin="@dimen/small_margin"
+    tools:showIn="@layout/activity_verify">
+
+    <View
+        android:id="@+id/v_color"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.1"
+        android:visibility="visible"
+        android:background="#FFFFFF"
+    />
+
+    <View
+        style="@style/linear_child"
+        android:layout_weight="0.1"
+    />
+
+    <TextView
+        android:id="@+id/tv_name"
+        style="@style/et_base"
+        android:gravity="start|left"
+        android:layout_weight="1.8"
+        android:importantForAutofill="no"
+        tools:text="сыр"
+    />
+
+    <TextView
+        android:text=":"
+        style="@style/tv_divider"
+    />
+
+    <TextView
+        android:id="@+id/tv_price"
+        style="@style/tv_base"
+        android:layout_weight="0.8"
+        android:importantForAutofill="no"
+        tools:text="10"
+    />
+
+    <TextView
+        android:text="*"
+        style="@style/tv_divider"
+    />
+
+    <EditText
+        android:id="@+id/et_weight"
+        style="@style/et_number"
+        android:layout_weight="0.8"
+        android:importantForAutofill="no"
+        android:hint="0"
+        tools:text="10"
+    />
+
+    <TextView
+        android:text="="
+        style="@style/tv_divider"
+    />
+
+    <TextView
+        android:id="@+id/tv_cost"
+        style="@style/tv_base"
+        android:layout_weight="0.8"
+        android:importantForAutofill="no"
+        tools:text="10" />
+
+    <View style="@style/tv_divider" />
+
+    <TextView
+        android:id="@+id/tv_delta"
+        style="@style/tv_base"
+        android:text="0"
+        android:textColor="@color/correct"
+        android:layout_weight="0.9"
+    />
+
+</LinearLayout>

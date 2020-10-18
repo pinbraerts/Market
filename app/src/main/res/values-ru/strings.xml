@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Рынок</string>
+    <string name="remove_all_title">Очистить список</string>
+    <string name="remove_all_message">Вы уверены?</string>
+    <string name="popup_copied">Текст скопирован в буфер обмена</string>
+    <string name="summary">Итого:</string>
+    <string name="verify">верифицировать</string>
+    <string name="remove_all">удалить всё</string>
+    <string name="copy">копировать</string>
+    <string name="paste">вставить</string>
+    <string name="add">добавить</string>
+    <string name="name">наименование</string>
+    <string name="price">стоимость</string>
+    <string name="cost">цена</string>
+    <string name="weight_amount">вес/количество</string>
+    <string name="discrepancy">неточность</string>
+</resources>

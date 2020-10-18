@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_margin="@dimen/small_margin"
+    tools:showIn="@layout/activity_edit">
+
+    <View
+        android:id="@+id/v_color"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.1"
+        android:visibility="visible"
+        android:background="#FFFFFF"
+        />
+
+    <View
+        style="@style/linear_child"
+        android:layout_weight="0.1"
+        />
+
+    <EditText
+        android:id="@+id/et_name"
+        style="@style/et_base"
+        android:layout_weight="4.8"
+        android:hint="сыр"
+        android:importantForAutofill="no"
+        tools:text="сыр пармезан с очень длинным названием"
+    />
+
+    <TextView
+        android:text="@string/semicolon"
+        style="@style/tv_divider"
+    />
+
+    <EditText
+        android:id="@+id/et_amount"
+        style="@style/et_base"
+        android:inputType="text"
+        android:layout_weight="1"
+        android:importantForAutofill="no"
+        tools:text="10"
+    />
+
+    <TextView
+        android:text="@string/asterisk"
+        style="@style/tv_divider"
+    />
+
+    <EditText
+        android:id="@+id/et_price"
+        style="@style/et_number"
+        android:layout_weight="0.8"
+        android:hint="@string/zero"
+        android:importantForAutofill="no"
+        tools:text="10"
+    />
+
+    <TextView
+        android:text="@string/assign"
+        style="@style/tv_divider"
+    />
+
+    <EditText
+        android:id="@+id/et_cost"
+        style="@style/et_number"
+        android:layout_weight="0.9"
+        android:hint="@string/zero"
+        android:importantForAutofill="no"
+        tools:text="100"
+    />
+
+</LinearLayout>
