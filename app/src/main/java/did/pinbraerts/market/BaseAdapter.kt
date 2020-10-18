@@ -1,6 +1,6 @@
 package did.pinbraerts.market
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import java.util.*
 
 abstract class BaseAdapter(
@@ -96,27 +96,27 @@ abstract class BaseAdapter(
         val adapter: BaseAdapter,
         val position: Int,
     ) {
-        public var color: Int
+        var color: Int
             get() = adapter.data[position].color
             set(value) = adapter.setColor(position, value)
 
-        public var name: String
+        var name: String
             get() = adapter.data[position].name
             set(value) = adapter.setName(position, value)
 
-        public var amount: String
+        var amount: String
             get() = adapter.data[position].amount
             set(value) = adapter.setAmount(position, value)
 
-        public var price: Float
+        var price: Float
             get() = adapter.data[position].price
             set(value) = adapter.setPrice(position, value)
 
-        public var cost: Float
+        var cost: Float
             get() = adapter.data[position].cost
             set(value) = adapter.setCost(position, value)
 
-        public val discrepancy: Float
+        val discrepancy: Float
             get() = adapter.data[position].discrepancy
     }
 

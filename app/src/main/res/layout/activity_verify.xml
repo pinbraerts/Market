@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,7 +10,7 @@
 
     <include layout="@layout/header_verify"/>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_items"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -41,20 +40,20 @@
             android:lines="1"
             android:textSize="20sp"
             android:textColor="@android:color/black"
-            android:text="Итого:" />
+            android:text="@string/summary" />
 
         <TextView
             android:id="@+id/tv_summary_cost"
             style="@style/tv_base"
             android:layout_weight="1"
-            android:text="0" />
+            android:text="@string/zero" />
 
         <TextView
             android:id="@+id/tv_summary_error"
             style="@style/tv_base"
             android:layout_weight="1"
             android:textColor="@color/correct"
-            android:text="0" />
+            android:text="@string/zero" />
 
     </LinearLayout>
 
@@ -81,7 +80,7 @@
         <ImageButton
             android:id="@+id/btn_copy"
             android:src="@drawable/ic_copy"
-            android:contentDescription="copy"
+            android:contentDescription="@string/copy"
             style="@style/ib_icon"
         />
 

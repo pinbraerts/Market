@@ -1,7 +1,7 @@
 package did.pinbraerts.market
 
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.RecyclerView
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,12 +26,12 @@ class VerifyAdapter(
     class ViewHolder(
         view: View,
         private val adapter: VerifyAdapter,
-        public val v_color: View = view.findViewById(R.id.v_color),
-        public val tv_name: TextView = view.findViewById(R.id.tv_name),
-        public val tv_price: TextView = view.findViewById(R.id.tv_price),
-        public val et_weight: EditText = view.findViewById(R.id.et_weight),
-        public val tv_cost: TextView = view.findViewById(R.id.tv_cost),
-        public val tv_delta: TextView = view.findViewById(R.id.tv_delta),
+        val v_color: View = view.findViewById(R.id.v_color),
+        val tv_name: TextView = view.findViewById(R.id.tv_name),
+        val tv_price: TextView = view.findViewById(R.id.tv_price),
+        val et_weight: EditText = view.findViewById(R.id.et_weight),
+        val tv_cost: TextView = view.findViewById(R.id.tv_cost),
+        val tv_delta: TextView = view.findViewById(R.id.tv_delta),
     ): BaseViewHolder(view) {
         override fun setColor(color: Int) {
             v_color.setBackgroundColor(MarketData.palette[color])

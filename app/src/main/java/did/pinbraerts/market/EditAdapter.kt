@@ -1,6 +1,6 @@
 package did.pinbraerts.market
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +11,7 @@ import java.text.NumberFormat
 class EditAdapter(
     recyclerView: RecyclerView,
     data: ArrayList<MarketItem>,
-    private val colorPicker: ColorPicker,
+    colorPicker: ColorPicker,
     private val summaryCost: TextView
 ): BaseAdapter(recyclerView, data) {
     private var sumCost: Float = 0f
@@ -34,11 +34,11 @@ class EditAdapter(
     class ViewHolder(
         view: View,
         private val adapter: EditAdapter,
-        public val v_color: View = view.findViewById(R.id.v_color),
-        public val et_name: EditText = view.findViewById(R.id.et_name),
-        public val et_amount: EditText = view.findViewById(R.id.et_amount),
-        public val et_price: EditText = view.findViewById(R.id.et_price),
-        public val et_cost: EditText = view.findViewById(R.id.et_cost),
+        val v_color: View = view.findViewById(R.id.v_color),
+        val et_name: EditText = view.findViewById(R.id.et_name),
+        val et_amount: EditText = view.findViewById(R.id.et_amount),
+        val et_price: EditText = view.findViewById(R.id.et_price),
+        val et_cost: EditText = view.findViewById(R.id.et_cost),
     ): BaseViewHolder(view) {
         private val listeners = arrayOf(
             TextWatchers.PlainString { newData ->
