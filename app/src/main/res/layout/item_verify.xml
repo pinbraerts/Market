@@ -24,14 +24,14 @@
     <TextView
         android:id="@+id/tv_name"
         style="@style/et_base"
-        android:gravity="start|left"
+        android:gravity="start"
         android:layout_weight="1.8"
         android:importantForAutofill="no"
-        tools:text="сыр"
+        tools:text="@string/cheese"
     />
 
     <TextView
-        android:text=":"
+        android:text="@string/semicolon"
         style="@style/tv_divider"
     />
 
@@ -44,7 +44,7 @@
     />
 
     <TextView
-        android:text="*"
+        android:text="@string/asterisk"
         style="@style/tv_divider"
     />
 
@@ -53,12 +53,12 @@
         style="@style/et_number"
         android:layout_weight="0.8"
         android:importantForAutofill="no"
-        android:hint="0"
+        android:hint="@string/zero"
         tools:text="10"
     />
 
     <TextView
-        android:text="="
+        android:text="@string/assign"
         style="@style/tv_divider"
     />
 
@@ -74,7 +74,7 @@
     <TextView
         android:id="@+id/tv_delta"
         style="@style/tv_base"
-        android:text="0"
+        android:text="@string/zero"
         android:textColor="@color/correct"
         android:layout_weight="0.9"
     />

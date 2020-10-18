@@ -1,17 +1,17 @@
 package did.pinbraerts.market
 
 data class MarketItem(
-    public var name: String = "",
-    public var amount: String = "",
-    public var weight: Float = 0f,
-    public var price: Float = 0f,
-    public var cost: Float = 0f,
-    public var color: Int = 0,
+    var name: String = "",
+    var amount: String = "",
+    var weight: Float = 0f,
+    var price: Float = 0f,
+    var cost: Float = 0f,
+    var color: Int = 0,
 ) {
-    public val expectedCost
+    val expectedCost
         get() = weight * price
 
-    public val discrepancy
+    val discrepancy
         get() = expectedCost - cost
 
     fun serialize() =
@@ -31,10 +31,9 @@ data class MarketItem(
         fun fromClipboard(s: String): MarketItem {
             val v = s.trim().split(':')
             val res = MarketItem()
-            if(v.size == 0)
+            if(v.isEmpty())
                 return res
-            if(v.size > 0)
-                res.name = v[0].trim()
+            res.name = v[0].trim()
             if(v.size > 1)
                 res.amount = v[1].trim()
             return res
@@ -43,12 +42,12 @@ data class MarketItem(
         fun deserialize(s: String): MarketItem {
             val a = s.split('汉')
             return MarketItem(
-                name = a.elementAtOrElse(0, { "" }).trim(),
-                weight = a.elementAtOrElse(1, { "" }).toFloatOrZero(),
-                price = a.elementAtOrElse(2, { "" }).toFloatOrZero(),
-                cost = a.elementAtOrElse(3, { "" }).toFloatOrZero(),
-                amount = a.elementAtOrElse(4, { "" }).trim(),
-                color = a.elementAtOrElse(5, { "" }).toIntOrZero(),
+                name = a.elementAtOrElse(0) { "" }.trim(),
+                weight = a.elementAtOrElse(1) { "" }.toFloatOrZero(),
+                price = a.elementAtOrElse(2) { "" }.toFloatOrZero(),
+                cost = a.elementAtOrElse(3) { "" }.toFloatOrZero(),
+                amount = a.elementAtOrElse(4) { "" }.trim(),
+                color = a.elementAtOrElse(5) { "" }.toIntOrZero(),
             )
         }
     }

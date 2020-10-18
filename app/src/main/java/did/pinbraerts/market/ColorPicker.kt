@@ -1,5 +1,6 @@
 package did.pinbraerts.market
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
@@ -62,6 +63,7 @@ class ColorPicker: View {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when(event.action) {
             MotionEvent.ACTION_UP -> {
@@ -75,9 +77,9 @@ class ColorPicker: View {
         return true
     }
 
-    fun setOnColorPickedListener(l: OnColorPickedListener) {
-        listener = l
-    }
+//    fun setOnColorPickedListener(l: OnColorPickedListener) {
+//        listener = l
+//    }
 
     fun setOnColorPickerListener(l: (Int) -> Unit) {
         listener = object : OnColorPickedListener {
@@ -87,11 +89,11 @@ class ColorPicker: View {
         }
     }
 
-    fun show() {
-        visibility = VISIBLE
-    }
-
-    fun hide() {
-        visibility = GONE
-    }
+//    fun show() {
+//        visibility = VISIBLE
+//    }
+//
+//    fun hide() {
+//        visibility = GONE
+//    }
 }

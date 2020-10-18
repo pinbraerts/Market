@@ -15,4 +15,5 @@
     <string name="cost">цена</string>
     <string name="weight_amount">вес/количество</string>
     <string name="discrepancy">неточность</string>
+    <string name="cheese">cheese</string>
 </resources>

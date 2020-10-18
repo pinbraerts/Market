@@ -14,20 +14,20 @@
         android:layout_weight="0.1"
         android:visibility="visible"
         android:background="#FFFFFF"
-        />
+    />
 
     <View
         style="@style/linear_child"
         android:layout_weight="0.1"
-        />
+    />
 
     <EditText
         android:id="@+id/et_name"
         style="@style/et_base"
         android:layout_weight="4.8"
-        android:hint="сыр"
+        android:hint="@string/cheese"
         android:importantForAutofill="no"
-        tools:text="сыр пармезан с очень длинным названием"
+        tools:text="@string/cheese"
     />
 
     <TextView
@@ -41,6 +41,7 @@
         android:inputType="text"
         android:layout_weight="1"
         android:importantForAutofill="no"
+        android:hint="@string/zero"
         tools:text="10"
     />
 

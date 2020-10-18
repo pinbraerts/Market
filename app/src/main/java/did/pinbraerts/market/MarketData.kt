@@ -3,16 +3,17 @@ package did.pinbraerts.market
 import android.content.Context
 import java.io.InputStreamReader
 import java.io.OutputStreamWriter
+import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 object MarketData {
-    const val ITEMS_FILE_NAME: String = "items.txt"
-    const val PREFERENCES_FILE_NAME: String = "preferences.txt"
+    private const val ITEMS_FILE_NAME: String = "items.txt"
+    private const val PREFERENCES_FILE_NAME: String = "preferences.txt"
 
-    public val data: ArrayList<MarketItem> = arrayListOf()
-    public var palette: IntArray = IntArray(0)
-    public val colorPreferences: HashMap<String, Int> = HashMap()
+    val data: ArrayList<MarketItem> = arrayListOf()
+    var palette: IntArray = IntArray(0)
+    private val colorPreferences: HashMap<String, Int> = HashMap()
 
     fun loadPreferences(context: Context) {
         if (colorPreferences.isNotEmpty())
@@ -59,7 +60,7 @@ object MarketData {
 
     fun load(reader: InputStreamReader) {
         reader.useLines {
-            data.addAll(it.filter(String::isNotBlank).map(MarketItem::deserialize))
+            it.filter(String::isNotBlank).map(MarketItem::deserialize).forEach(data::add)
         }
         reader.close()
     }
@@ -75,7 +76,7 @@ object MarketData {
     }
 
     fun savePreferences(context: Context) =
-        savePreferences(java.io.OutputStreamWriter(context.openFileOutput(PREFERENCES_FILE_NAME, Context.MODE_PRIVATE)))
+        savePreferences(OutputStreamWriter(context.openFileOutput(PREFERENCES_FILE_NAME, Context.MODE_PRIVATE)))
 
     fun savePreferences(output: OutputStreamWriter) {
         data.forEach {
@@ -86,4 +87,7 @@ object MarketData {
         }
         output.close()
     }
+
+    fun preference(item: MarketItem) =
+        colorPreferences.getOrElse(item.name.toLowerCase(Locale.getDefault())) { item.color }
 }

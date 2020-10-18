@@ -9,10 +9,6 @@ import java.text.NumberFormat
 import java.text.ParseException
 
 object TextWatchers {
-    interface Updatable<T> {
-        public abstract fun update(newData: T): Unit
-    }
-
     class PlainString(private val target: (String) -> Unit): TextWatcher {
         override fun beforeTextChanged(
             s: CharSequence,
@@ -75,7 +71,7 @@ fun EditText.showKeyboard() {
 //    imm.toggleSoftInput(0, 0)
 }
 
-fun EditText.hideKeyboard() {
-    val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-    imm.hideSoftInputFromWindow(this.windowToken, 0)
-}
+//fun EditText.hideKeyboard() {
+//    val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+//    imm.hideSoftInputFromWindow(this.windowToken, 0)
+//}
