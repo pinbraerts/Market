@@ -35,9 +35,9 @@
 
             v -16
             m -10 0
-            v 7
+            v 8
             m -2 0
-            v -3
+            v -4
             m -10 0
             v 12
             m 6 2
@@ -45,46 +45,5 @@
             m 10 0
             v 8
     "/>
-
-    <path
-        android:strokeWidth="2"
-        android:strokeLineCap="round"
-        android:strokeLineJoin="round"
-        android:fillColor="#00000000"
-        android:strokeColor="#000000"
-        android:pathData="
-            m 55 55
-            m 0 4
-            a 5 2 0 1 0 10 0
-            m -10 4
-            a 5 2 0 1 0 10 0
-            m -10 4
-            a 5 2 0 1 0 10 0
-            m -10 4
-            a 5 2 0 1 0 10 0
-            v -16
-            m -10 0
-            v 16
-    "/>
-
-    <path
-        android:strokeWidth="2"
-        android:strokeLineCap="round"
-        android:strokeLineJoin="round"
-        android:fillColor="#00000000"
-        android:strokeColor="#000000"
-        android:pathData="
-            M 7 13
-            m 55 55
-            a 5 2 0 1 1 0 0.001
-            m 0 4
-            a 5 2 0 1 0 10 0
-            m -10 4
-            a 5 2 0 1 0 10 0
-            v -8
-            m -10 0
-            v 8
-        "
-    />
 
 </vector>
