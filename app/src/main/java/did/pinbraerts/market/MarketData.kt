@@ -80,7 +80,7 @@ object MarketData {
 
     fun savePreferences(output: OutputStreamWriter) {
         data.forEach {
-            colorPreferences[it.name] = it.color
+            colorPreferences[it.name.toLowerCase(Locale.getDefault())] = it.color
         }
         colorPreferences.forEach { (name, color) ->
             output.write("$name:$color\n")
