@@ -58,7 +58,7 @@
     />
 
     <TextView
-        android:text="@string/assign"
+        android:text="@string/equals"
         style="@style/tv_divider"
     />
 
@@ -72,7 +72,7 @@
     <View style="@style/tv_divider" />
 
     <TextView
-        android:id="@+id/tv_delta"
+        android:id="@+id/tv_discrepancy"
         style="@style/tv_base"
         android:text="@string/zero"
         android:textColor="@color/correct"

@@ -17,6 +17,6 @@
     <string name="semicolon" translatable="false">:</string>
     <string name="asterisk" translatable="false">*</string>
     <string name="zero" translatable="false">0</string>
-    <string name="assign" translatable="false">=</string>
+    <string name="equals" translatable="false">=</string>
     <string name="cheese">cheese</string>
 </resources>

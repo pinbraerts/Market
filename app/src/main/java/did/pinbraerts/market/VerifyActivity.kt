@@ -48,7 +48,7 @@ class VerifyActivity : AppCompatActivity() {
             recyclerView,
             MarketData.data,
             findViewById(R.id.tv_summary_cost),
-            findViewById(R.id.tv_summary_error),
+            findViewById(R.id.tv_summary_discrepancy),
         )
         recyclerView.adapter = viewAdapter
 
@@ -61,7 +61,7 @@ class VerifyActivity : AppCompatActivity() {
 //        }
 
         val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        findViewById<ImageButton>(R.id.btn_copy).setOnClickListener {
+        findViewById<ImageButton>(R.id.ib_copy).setOnClickListener {
             clipboard.setPrimaryClip(ClipData.newPlainText("simple text", viewAdapter.toPlainText()))
             Toast.makeText(this, "Text has been copied into clipboard", Toast.LENGTH_SHORT).show()
         }

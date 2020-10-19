@@ -24,7 +24,7 @@
     <EditText
         android:id="@+id/et_name"
         style="@style/et_base"
-        android:layout_weight="4.8"
+        android:layout_weight="5"
         android:hint="@string/cheese"
         android:importantForAutofill="no"
         tools:text="@string/cheese"
@@ -60,7 +60,7 @@
     />
 
     <TextView
-        android:text="@string/assign"
+        android:text="@string/equals"
         style="@style/tv_divider"
     />
 

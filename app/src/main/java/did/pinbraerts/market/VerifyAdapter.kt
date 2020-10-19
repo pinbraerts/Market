@@ -31,7 +31,7 @@ class VerifyAdapter(
         val tv_price: TextView = view.findViewById(R.id.tv_price),
         val et_weight: EditText = view.findViewById(R.id.et_weight),
         val tv_cost: TextView = view.findViewById(R.id.tv_cost),
-        val tv_delta: TextView = view.findViewById(R.id.tv_delta),
+        val tv_delta: TextView = view.findViewById(R.id.tv_discrepancy),
     ): BaseViewHolder(view) {
         override fun setColor(color: Int) {
             v_color.setBackgroundColor(MarketData.palette[color])

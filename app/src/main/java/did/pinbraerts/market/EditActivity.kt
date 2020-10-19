@@ -30,13 +30,13 @@ class EditActivity : AppCompatActivity() {
         viewAdapter = EditAdapter(
             recyclerView,
             MarketData.data,
-            findViewById(R.id.w_palette),
+            findViewById(R.id.w_color_picker),
             findViewById(R.id.tv_summary_cost),
         )
 
         recyclerView.adapter = viewAdapter
 
-        findViewById<ImageButton>(R.id.btn_add).setOnClickListener {
+        findViewById<ImageButton>(R.id.ib_add).setOnClickListener {
             viewAdapter.add(MarketItem())
 //            val pos = viewAdapter.itemCount - 1
 //            recyclerView.scrollToPosition(pos)
@@ -44,7 +44,7 @@ class EditActivity : AppCompatActivity() {
 
         val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
-        findViewById<ImageButton>(R.id.btn_paste).setOnClickListener {
+        findViewById<ImageButton>(R.id.ib_paste).setOnClickListener {
             if(clipboard.hasPrimaryClip() and
                 (clipboard.primaryClipDescription?.hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN) == true)
             ) {
@@ -56,7 +56,7 @@ class EditActivity : AppCompatActivity() {
             }
         }
 
-        findViewById<ImageButton>(R.id.btn_copy).setOnClickListener {
+        findViewById<ImageButton>(R.id.ib_copy).setOnClickListener {
             clipboard.setPrimaryClip(ClipData.newPlainText("simple text", viewAdapter.toPlainText()))
             Toast.makeText(this, getString(R.string.popup_copied), Toast.LENGTH_SHORT).show()
         }
@@ -66,7 +66,7 @@ class EditActivity : AppCompatActivity() {
             startActivity(Intent(this, VerifyActivity::class.java))
         }
 
-        findViewById<ImageButton>(R.id.btn_remove).setOnClickListener {
+        findViewById<ImageButton>(R.id.ib_clear).setOnClickListener {
             AlertDialog.Builder(this)
                 .setTitle(getString(R.string.remove_all_title))
                 .setMessage(getString(R.string.remove_all_message))

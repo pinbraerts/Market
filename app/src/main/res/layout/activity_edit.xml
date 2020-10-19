@@ -56,28 +56,28 @@
         android:orientation="horizontal">
 
         <ImageButton
-            android:id="@+id/btn_add"
+            android:id="@+id/ib_add"
             style="@style/ib_icon"
             android:src="@drawable/ic_add"
             android:contentDescription="@string/add"
         />
 
         <ImageButton
-            android:id="@+id/btn_paste"
+            android:id="@+id/ib_paste"
             style="@style/ib_icon"
             android:src="@drawable/ic_paste"
             android:contentDescription="@string/paste"
         />
 
         <ImageButton
-            android:id="@+id/btn_copy"
+            android:id="@+id/ib_copy"
             style="@style/ib_icon"
             android:src="@drawable/ic_copy"
             android:contentDescription="@string/copy"
         />
 
         <ImageButton
-            android:id="@+id/btn_remove"
+            android:id="@+id/ib_clear"
             style="@style/ib_icon"
             android:src="@drawable/ic_cross"
             android:contentDescription="@string/remove_all"
@@ -93,7 +93,7 @@
     </LinearLayout>
 
     <did.pinbraerts.market.ColorPicker
-        android:id="@+id/w_palette"
+        android:id="@+id/w_color_picker"
         android:layout_margin="@dimen/small_margin"
         android:layout_width="match_parent"
         android:layout_height="@dimen/color_size"
