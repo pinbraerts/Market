@@ -58,20 +58,3 @@ object TextWatchers {
         }
     }
 }
-
-fun String.toFloatOrZero() =
-    toFloatOrNull() ?: 0f
-
-fun String.toIntOrZero() =
-    toIntOrNull() ?: 0
-
-fun EditText.showKeyboard() {
-    val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-    imm.showSoftInput(this, InputMethodManager.SHOW_FORCED)
-//    imm.toggleSoftInput(0, 0)
-}
-
-//fun EditText.hideKeyboard() {
-//    val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-//    imm.hideSoftInputFromWindow(this.windowToken, 0)
-//}
