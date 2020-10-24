@@ -2,44 +2,53 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_header"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    tools:showIn="@layout/activity_verify">
+    android:animateLayoutChanges="true"
+    tools:showIn="@layout/activity_main">
 
     <ImageButton
         style="@style/ib_icon"
         android:src="@drawable/ic_name"
         android:contentDescription="@string/name"
-        android:layout_weight="2"
+        android:layout_weight="5"
     />
 
     <ImageButton
+        android:id="@+id/ib_weight"
+        style="@style/ib_icon"
+        android:src="@drawable/ic_weight"
+        android:contentDescription="@string/weight_amount"
+        android:layout_weight="1.2"
+    />
+
+    <ImageButton
+        android:id="@+id/ib_price"
         style="@style/ib_icon"
         android:src="@drawable/ic_coin"
         android:contentDescription="@string/price"
         android:layout_weight="1"
+        android:visibility="gone"
     />
 
     <ImageButton
-        style="@style/ib_icon"
-        android:src="@drawable/ic_weight"
-        android:contentDescription="@string/weight_amount"
-        android:layout_weight="1"
-    />
-
-    <ImageButton
+        android:id="@+id/ib_cost"
         style="@style/ib_icon"
         android:src="@drawable/ic_money"
         android:contentDescription="@string/cost"
         android:layout_weight="1"
+        android:visibility="gone"
     />
 
     <ImageButton
+        android:id="@+id/ib_discrepancy"
         style="@style/ib_icon"
         android:src="@drawable/ic_difference"
         android:contentDescription="@string/discrepancy"
         android:layout_weight="1"
+        android:visibility="gone"
     />
 
 </LinearLayout>

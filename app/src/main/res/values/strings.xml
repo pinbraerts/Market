@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Market</string>
-    <string name="remove_all_message">Are you sure?</string>
+    <string name="remove_all_message">Are you sure to remove all items from the list?</string>
     <string name="popup_copied">Text has been copied into clipboard</string>
-    <string name="remove_all_title">Clear the list</string>
+    <string name="remove_all_title">Clear the list?</string>
     <string name="summary">Summary:</string>
     <string name="verify">verify</string>
     <string name="remove_all">remove all</string>
@@ -19,4 +19,6 @@
     <string name="zero" translatable="false">0</string>
     <string name="equals" translatable="false">=</string>
     <string name="cheese">cheese</string>
+    <string name="previous">previous</string>
+    <string name="next">next</string>
 </resources>

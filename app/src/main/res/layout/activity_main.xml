@@ -7,56 +7,9 @@
     android:orientation="vertical"
     android:layout_margin="@dimen/big_margin"
     android:animateLayoutChanges="true"
-    tools:context=".EditActivity">
+    tools:context=".MainActivity">
 
-    <LinearLayout
-        android:id="@+id/ll_header"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:animateLayoutChanges="true"
-        tools:showIn="@layout/activity_edit">
-
-        <ImageButton
-            style="@style/ib_icon"
-            android:src="@drawable/ic_name"
-            android:contentDescription="@string/name"
-            android:layout_weight="5"
-        />
-
-        <ImageButton
-            android:id="@+id/ib_weight"
-            style="@style/ib_icon"
-            android:src="@drawable/ic_weight"
-            android:contentDescription="@string/weight_amount"
-            android:layout_weight="1.2"
-        />
-
-        <ImageButton
-            android:id="@+id/ib_price"
-            style="@style/ib_icon"
-            android:src="@drawable/ic_coin"
-            android:contentDescription="@string/price"
-            android:layout_weight="1"
-        />
-
-        <ImageButton
-            android:id="@+id/ib_cost"
-            style="@style/ib_icon"
-            android:src="@drawable/ic_money"
-            android:contentDescription="@string/cost"
-            android:layout_weight="1"
-        />
-
-        <ImageButton
-            android:id="@+id/ib_discrepancy"
-            style="@style/ib_icon"
-            android:src="@drawable/ic_difference"
-            android:contentDescription="@string/discrepancy"
-            android:layout_weight="1"
-        />
-
-    </LinearLayout>
+    <include layout="@layout/main_header"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_items"
@@ -73,78 +26,12 @@
         android:layout_margin="@dimen/small_margin"
         android:background="@android:color/darker_gray" />
 
-    <LinearLayout
-        android:id="@+id/ll_summary"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/small_margin"
-        android:animateLayoutChanges="true"
-        android:orientation="horizontal">
+    <include
+        layout="@layout/main_summary"
+        android:visibility="gone"
+    />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="7"
-            android:singleLine="true"
-            android:lines="1"
-            android:textSize="20sp"
-            android:textColor="@android:color/black"
-            android:text="@string/summary"
-        />
-
-        <TextView
-            android:id="@+id/tv_summary_cost"
-            style="@style/tv_base"
-            android:layout_weight="1"
-            android:text="@string/zero"
-        />
-
-        <TextView
-            android:id="@+id/tv_summary_discrepancy"
-            style="@style/tv_base"
-            android:layout_weight="1"
-            android:textColor="@color/correct"
-            android:text="@string/zero"
-        />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/ll_actions"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:animateLayoutChanges="true"
-        android:orientation="horizontal">
-
-        <ImageButton
-            android:id="@+id/ib_paste"
-            style="@style/ib_icon"
-            android:src="@drawable/ic_paste"
-            android:contentDescription="@string/paste"
-        />
-
-        <ImageButton
-            android:id="@+id/ib_copy"
-            style="@style/ib_icon"
-            android:src="@drawable/ic_copy"
-            android:contentDescription="@string/copy"
-        />
-
-        <ImageButton
-            android:id="@+id/ib_clear"
-            style="@style/ib_icon"
-            android:src="@drawable/ic_cross"
-            android:contentDescription="@string/remove_all"
-        />
-
-        <ImageButton
-            android:id="@+id/ib_add"
-            style="@style/ib_icon"
-            android:src="@drawable/ic_add"
-            android:contentDescription="@string/add"
-        />
-
-    </LinearLayout>
+    <include layout="@layout/main_actions"/>
 
     <did.pinbraerts.market.ColorPicker
         android:id="@+id/w_color_picker"

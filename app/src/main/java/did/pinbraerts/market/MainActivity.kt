@@ -1,6 +1,7 @@
 package did.pinbraerts.market
 
 import android.annotation.SuppressLint
+import android.content.*
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.GestureDetector
@@ -9,9 +10,12 @@ import android.view.View
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import java.lang.ref.WeakReference
+import java.text.NumberFormat
 
 class MainActivity : AppCompatActivity() {
     private class HeaderViewHolder(
@@ -46,6 +50,8 @@ class MainActivity : AppCompatActivity() {
         var ib_paste: ImageButton = view.findViewById(R.id.ib_paste),
         var ib_copy: ImageButton = view.findViewById(R.id.ib_copy),
         var ib_clear: ImageButton = view.findViewById(R.id.ib_clear),
+        var ib_previous: ImageButton = view.findViewById(R.id.ib_previous),
+        var ib_next: ImageButton = view.findViewById(R.id.ib_next),
     ) {
         fun setState(state: State) =
             when(state) {
@@ -54,30 +60,57 @@ class MainActivity : AppCompatActivity() {
                     ib_paste.show()
                     ib_copy.show()
                     ib_clear.show()
+                    ib_previous.isEnabled = false
+                    ib_next.isEnabled = true
                 }
                 State.BUY -> {
                     ib_add.hide()
                     ib_paste.show()
                     ib_copy.show()
                     ib_clear.show()
+                    ib_previous.isEnabled = true
+                    ib_next.isEnabled = true
                 }
                 State.VERIFY -> {
                     ib_add.hide()
                     ib_paste.hide()
                     ib_copy.show()
                     ib_clear.hide()
+                    ib_previous.isEnabled = true
+                    ib_next.isEnabled = false
                 }
             }
     }
-    private class SummaryViewHolder(
+    class SummaryViewHolder(
         var ll_summary: LinearLayout,
         var tv_summary_cost: TextView = ll_summary.findViewById(R.id.tv_summary_cost),
         var tv_summary_discrepancy: TextView = ll_summary.findViewById(R.id.tv_summary_discrepancy),
     ) {
+        private val context: Context
+            get() = ll_summary.context
+
+        var cost: Float = 0f
+            get() = field
+            set(value) {
+                field = value
+                tv_summary_cost.text = NumberFormat.getInstance().format(cost)
+            }
+
+        var discrepancy: Float = 0f
+            get() = field
+            set(value) {
+                field = value
+                tv_summary_discrepancy.text = NumberFormat.getInstance().format(cost)
+                if(value > -0.1f)
+                    tv_summary_discrepancy.setTextColor(ContextCompat.getColor(context, R.color.correct))
+                else
+                    tv_summary_discrepancy.setTextColor(ContextCompat.getColor(context, R.color.wrong))
+            }
+
         fun setState(state: State) =
             when(state) {
                 State.PLAN -> {
-                    ll_summary.show()
+                    ll_summary.hide()
                 }
                 State.BUY -> {
                     ll_summary.show()
@@ -95,12 +128,12 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var header: HeaderViewHolder
     private lateinit var actions: ActionsViewHolder
-    private lateinit var summary: SummaryViewHolder
+    lateinit var summary: SummaryViewHolder
 
     private lateinit var itemsAdapter: MarketItemAdapter
     private lateinit var gesturesDetector: GestureDetector
 
-    private var data: ArrayList<String> = arrayListOf()
+    private var data: ArrayList<MarketItem> = arrayListOf()
 
     private val width: Int
         get() = window.decorView.width
@@ -124,7 +157,7 @@ class MainActivity : AppCompatActivity() {
         actions.setState(newState)
     }
 
-    private var state: State = State.PLAN
+    var state: State = State.PLAN
         get() = field
         set(value) {
             if(value != field)
@@ -137,12 +170,33 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        itemsAdapter = MarketItemAdapter(data, WeakReference(state))
+        MarketData.loadPalette(this)
+
+        itemsAdapter = MarketItemAdapter(MarketData.ITEMS_FILE_NAME, data, this)
+
+//        gesturesDetector = GestureDetector(this, object :
+//            GestureDetector.SimpleOnGestureListener() {
+//            override fun onFling(
+//                e1: MotionEvent?,
+//                e2: MotionEvent?,
+//                velocityX: Float,
+//                velocityY: Float
+//            ): Boolean {
+//                if(e1 != null && e1.x > 0.6f * width) {
+//                    onSwipeCompleted(velocityX)
+//                    return true
+//                }
+//                return false
+//            }
+//        })
 
         rv_items = findViewById(R.id.rv_items)
         rv_items.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = itemsAdapter
+//            setOnTouchListener { _, event ->
+//                return@setOnTouchListener gesturesDetector.onTouchEvent(event)
+//            }
         }
 
         header = HeaderViewHolder(findViewById(R.id.ll_header))
@@ -150,43 +204,92 @@ class MainActivity : AppCompatActivity() {
         actions = ActionsViewHolder(findViewById(R.id.ll_actions))
 
         w_color_picker = findViewById(R.id.w_color_picker)
-
-        data.add("one")
-        data.add("two")
-        data.add("three")
+        w_color_picker.setOnColorPickerListener(itemsAdapter::colorChanged)
 
         onStateChange(State.PLAN)
 
-        rv_items.setOnTouchListener { _, event ->
-            gesturesDetector.onTouchEvent(event)
-        }
-        gesturesDetector = GestureDetector(this, object :
-            GestureDetector.SimpleOnGestureListener() {
-            override fun onFling(
-                e1: MotionEvent?,
-                e2: MotionEvent?,
-                velocityX: Float,
-                velocityY: Float
-            ): Boolean {
-                if(e1 != null && e1.x > 0.6f * width)
-                    onSwipeCompleted(velocityX)
-                return true
+        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        actions.apply {
+            ib_add.setOnClickListener {
+                itemsAdapter.add(MarketItem())
+//            val pos = viewAdapter.itemCount - 1
+//            recyclerView.scrollToPosition(pos)
             }
-        })
+            ib_paste.setOnClickListener {
+                if(clipboard.hasPrimaryClip() and
+                    (clipboard.primaryClipDescription?.hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN) == true)
+                ) {
+                    val data = clipboard.primaryClip?.getItemAt(0)?.text ?: ""
+                    if(data.isEmpty())
+                        return@setOnClickListener
+
+                    itemsAdapter.paste(data.toString())
+                }
+            }
+            ib_copy.setOnClickListener {
+                clipboard.setPrimaryClip(ClipData.newPlainText("simple text", itemsAdapter.toPlainText()))
+                Toast.makeText(this@MainActivity, getString(R.string.popup_copied), Toast.LENGTH_SHORT).show()
+            }
+            ib_clear.setOnClickListener {
+                AlertDialog.Builder(this@MainActivity)
+                    .setTitle(getString(R.string.remove_all_title))
+                    .setMessage(getString(R.string.remove_all_message))
+                    .setPositiveButton(android.R.string.yes) { _: DialogInterface, _: Int ->
+                        itemsAdapter.removeAll()
+                    }
+                    .setNegativeButton(android.R.string.no, null)
+                    .show()
+            }
+            ib_previous.setOnClickListener {
+                onPreviousState()
+            }
+            ib_next.setOnClickListener {
+                onNextState()
+            }
+        }
     }
 
-    private fun onSwipeCompleted(delta: Float) {
-        when(state) {
-            State.PLAN ->
-                if(delta < 0)
-                    state = State.BUY
-            State.BUY ->
-                state = if(delta > 0)
-                    State.PLAN
-                else State.VERIFY
-            State.VERIFY ->
-                if(delta > 0)
-                    state = State.BUY
+    private fun onPreviousState() {
+        state = when (state) {
+            State.PLAN -> State.PLAN
+            State.BUY -> State.PLAN
+            State.VERIFY -> State.BUY
         }
+    }
+
+    private fun onNextState() {
+        state = when (state) {
+            State.PLAN -> State.BUY
+            State.BUY -> State.VERIFY
+            State.VERIFY -> State.VERIFY
+        }
+    }
+
+//    private fun onSwipeCompleted(delta: Float) {
+//        when(state) {
+//            State.PLAN ->
+//                if(delta < 0)
+//                    state = State.BUY
+//            State.BUY ->
+//                state = if(delta > 0)
+//                    State.PLAN
+//                else State.VERIFY
+//            State.VERIFY ->
+//                if(delta > 0)
+//                    state = State.BUY
+//        }
+//    }
+
+    override fun onPause() {
+        super.onPause()
+        MarketData.savePreferences(this, data)
+        itemsAdapter.save()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        MarketData.loadPreferences(this)
+        MarketTouchHelper(itemsAdapter).attachToRecyclerView(rv_items)
+        itemsAdapter.load()
     }
 }

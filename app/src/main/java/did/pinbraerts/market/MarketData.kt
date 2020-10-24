@@ -8,10 +8,9 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 object MarketData {
-    private const val ITEMS_FILE_NAME: String = "items.txt"
+    const val ITEMS_FILE_NAME: String = "items.txt"
     private const val PREFERENCES_FILE_NAME: String = "preferences.txt"
 
-    val data: ArrayList<MarketItem> = arrayListOf()
     var palette: IntArray = IntArray(0)
     private val colorPreferences: HashMap<String, Int> = HashMap()
 
@@ -50,35 +49,10 @@ object MarketData {
         }
     }
 
-    fun load(context: Context) {
-        if(data.isNotEmpty())
-            return
-        if(!context.getFileStreamPath(ITEMS_FILE_NAME).exists())
-            return
-        load(InputStreamReader(context.openFileInput(ITEMS_FILE_NAME)))
-    }
+    fun savePreferences(context: Context, data: ArrayList<MarketItem>) =
+        savePreferences(OutputStreamWriter(context.openFileOutput(PREFERENCES_FILE_NAME, Context.MODE_PRIVATE)), data)
 
-    fun load(reader: InputStreamReader) {
-        reader.useLines {
-            it.filter(String::isNotBlank).map(MarketItem::deserialize).forEach(data::add)
-        }
-        reader.close()
-    }
-
-    fun save(context: Context) =
-        save(OutputStreamWriter(context.openFileOutput(ITEMS_FILE_NAME, Context.MODE_PRIVATE)))
-
-    fun save(writer: OutputStreamWriter) {
-        data.filter(MarketItem::isValid).forEach {
-            writer.write(it.serialize() + '\n')
-        }
-        writer.close()
-    }
-
-    fun savePreferences(context: Context) =
-        savePreferences(OutputStreamWriter(context.openFileOutput(PREFERENCES_FILE_NAME, Context.MODE_PRIVATE)))
-
-    fun savePreferences(output: OutputStreamWriter) {
+    fun savePreferences(output: OutputStreamWriter, data: ArrayList<MarketItem>) {
         data.forEach {
             colorPreferences[it.name.toLowerCase(Locale.getDefault())] = it.color
         }

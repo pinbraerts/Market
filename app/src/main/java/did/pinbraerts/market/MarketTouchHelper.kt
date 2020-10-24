@@ -3,7 +3,7 @@ package did.pinbraerts.market
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.ItemTouchHelper
 
-class MarketTouchHelper(private val adapter: BaseAdapter): ItemTouchHelper(object : ItemTouchHelper.Callback() {
+class MarketTouchHelper(private val adapter: MarketItemAdapter): ItemTouchHelper(object : ItemTouchHelper.Callback() {
     override fun getMovementFlags(
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder) =
