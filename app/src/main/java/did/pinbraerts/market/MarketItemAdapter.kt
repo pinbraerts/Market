@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.activity_main.*
 import java.io.InputStreamReader
 import java.io.OutputStreamWriter
 
@@ -38,7 +37,7 @@ class MarketItemAdapter(
         MarketItemViewHolder(
             LayoutInflater.from(parent.context).inflate(
                 R.layout.market_item, parent, false
-            ), activity.state, this
+            ), this
         )
 
     override fun onBindViewHolder(holder: MarketItemViewHolder, position: Int) {
@@ -145,9 +144,11 @@ class MarketItemAdapter(
         beforeUpdate(index)
 
         data[index].weight = weight
-        if(shouldUpdateView)
-            getViewHolder(index)?.setWeight(weight)
-
+        getViewHolder(index)?.apply{
+            if(shouldUpdateView)
+                setWeight(weight)
+            setDiscrepancy(data[index].discrepancy)
+        }
         afterUpdate(index)
     }
 
@@ -155,8 +156,11 @@ class MarketItemAdapter(
         beforeUpdate(index)
 
         data[index].price = price
-        if(shouldUpdateView)
-            getViewHolder(index)?.setPrice(price)
+        getViewHolder(index)?.apply {
+            if(shouldUpdateView)
+                setPrice(price)
+            setDiscrepancy(data[index].discrepancy)
+        }
 
         afterUpdate(index)
     }
@@ -165,8 +169,11 @@ class MarketItemAdapter(
         beforeUpdate(index)
 
         data[index].cost = cost
-        if(shouldUpdateView)
-            getViewHolder(index)?.setCost(cost)
+        getViewHolder(index)?.apply {
+            if(shouldUpdateView)
+                setCost(cost)
+            setDiscrepancy(data[index].discrepancy)
+        }
 
         afterUpdate(index)
     }
