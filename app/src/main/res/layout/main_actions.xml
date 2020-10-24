@@ -14,54 +14,27 @@
         style="@style/ib_icon"
         android:src="@drawable/ic_paste"
         android:contentDescription="@string/paste"
-        />
+    />
 
     <ImageButton
         android:id="@+id/ib_copy"
         style="@style/ib_icon"
         android:src="@drawable/ic_copy"
         android:contentDescription="@string/copy"
-        />
+    />
 
     <ImageButton
         android:id="@+id/ib_clear"
         style="@style/ib_icon"
         android:src="@drawable/ic_cross"
         android:contentDescription="@string/remove_all"
-        />
+    />
 
     <ImageButton
         android:id="@+id/ib_add"
         style="@style/ib_icon"
         android:src="@drawable/ic_add"
         android:contentDescription="@string/add"
-        />
-
-    <ImageButton
-        android:id="@+id/ib_previous"
-        android:layout_width="wrap_content"
-        android:layout_weight="0"
-        android:paddingLeft="16dp"
-        android:paddingStart="16dp"
-        android:paddingRight="16dp"
-        android:paddingEnd="16dp"
-        style="@style/ib_icon"
-        android:scaleX="-1"
-        android:src="@drawable/ic_arrow"
-        android:contentDescription="@string/previous"
-    />
-
-    <ImageButton
-        android:id="@+id/ib_next"
-        android:layout_width="wrap_content"
-        android:layout_weight="0"
-        android:paddingLeft="16dp"
-        android:paddingStart="16dp"
-        android:paddingRight="16dp"
-        android:paddingEnd="16dp"
-        style="@style/ib_icon"
-        android:src="@drawable/ic_arrow"
-        android:contentDescription="@string/next"
     />
 
 </LinearLayout>

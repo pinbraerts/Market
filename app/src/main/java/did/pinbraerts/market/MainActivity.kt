@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.*
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageButton
@@ -15,9 +14,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import java.text.NumberFormat
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), SwipeDetector.SwipeListener {
     private class HeaderViewHolder(
         view: View,
         val ib_weight: ImageButton = view.findViewById(R.id.ib_weight),
@@ -50,8 +48,6 @@ class MainActivity : AppCompatActivity() {
         var ib_paste: ImageButton = view.findViewById(R.id.ib_paste),
         var ib_copy: ImageButton = view.findViewById(R.id.ib_copy),
         var ib_clear: ImageButton = view.findViewById(R.id.ib_clear),
-        var ib_previous: ImageButton = view.findViewById(R.id.ib_previous),
-        var ib_next: ImageButton = view.findViewById(R.id.ib_next),
     ) {
         fun setState(state: State) =
             when(state) {
@@ -60,24 +56,18 @@ class MainActivity : AppCompatActivity() {
                     ib_paste.show()
                     ib_copy.show()
                     ib_clear.show()
-                    ib_previous.isEnabled = false
-                    ib_next.isEnabled = true
                 }
                 State.BUY -> {
                     ib_add.hide()
                     ib_paste.show()
                     ib_copy.show()
                     ib_clear.show()
-                    ib_previous.isEnabled = true
-                    ib_next.isEnabled = true
                 }
                 State.VERIFY -> {
                     ib_add.hide()
                     ib_paste.hide()
                     ib_copy.show()
                     ib_clear.hide()
-                    ib_previous.isEnabled = true
-                    ib_next.isEnabled = false
                 }
             }
     }
@@ -90,21 +80,21 @@ class MainActivity : AppCompatActivity() {
             get() = ll_summary.context
 
         var cost: Float = 0f
-            get() = field
             set(value) {
                 field = value
-                tv_summary_cost.text = NumberFormat.getInstance().format(cost)
+                tv_summary_cost.text = MarketData.format(value)
             }
 
         var discrepancy: Float = 0f
-            get() = field
             set(value) {
                 field = value
-                tv_summary_discrepancy.text = NumberFormat.getInstance().format(cost)
-                if(value > -0.1f)
-                    tv_summary_discrepancy.setTextColor(ContextCompat.getColor(context, R.color.correct))
-                else
-                    tv_summary_discrepancy.setTextColor(ContextCompat.getColor(context, R.color.wrong))
+                tv_summary_discrepancy.apply {
+                    text = MarketData.format(value)
+                    setTextColor(ContextCompat.getColor(context,
+                        if (value > -0.1f) R.color.correct
+                        else R.color.wrong
+                    ))
+                }
             }
 
         fun setState(state: State) =
@@ -123,15 +113,16 @@ class MainActivity : AppCompatActivity() {
             }
     }
 
-    private lateinit var rv_items: RecyclerView
+    lateinit var rv_items: RecyclerView
+
     private lateinit var w_color_picker: ColorPicker
 
     private lateinit var header: HeaderViewHolder
-    private lateinit var actions: ActionsViewHolder
     lateinit var summary: SummaryViewHolder
+    private lateinit var actions: ActionsViewHolder
 
     private lateinit var itemsAdapter: MarketItemAdapter
-    private lateinit var gesturesDetector: GestureDetector
+    private lateinit var swipeDetector: SwipeDetector
 
     private var data: ArrayList<MarketItem> = arrayListOf()
 
@@ -150,7 +141,7 @@ class MainActivity : AppCompatActivity() {
     private fun onStateChange(newState: State) {
         rv_items.visibleViewHolders().forEach {
             if(it is MarketItemViewHolder)
-                it.setState(newState)
+                it.setState(newState, data[it.adapterPosition])
         }
         summary.setState(newState)
         header.setState(newState)
@@ -158,7 +149,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     var state: State = State.PLAN
-        get() = field
         set(value) {
             if(value != field)
                 onStateChange(value)
@@ -173,30 +163,13 @@ class MainActivity : AppCompatActivity() {
         MarketData.loadPalette(this)
 
         itemsAdapter = MarketItemAdapter(MarketData.ITEMS_FILE_NAME, data, this)
-
-//        gesturesDetector = GestureDetector(this, object :
-//            GestureDetector.SimpleOnGestureListener() {
-//            override fun onFling(
-//                e1: MotionEvent?,
-//                e2: MotionEvent?,
-//                velocityX: Float,
-//                velocityY: Float
-//            ): Boolean {
-//                if(e1 != null && e1.x > 0.6f * width) {
-//                    onSwipeCompleted(velocityX)
-//                    return true
-//                }
-//                return false
-//            }
-//        })
+        swipeDetector = SwipeDetector(this)
+        swipeDetector.setSwipeListener(this)
 
         rv_items = findViewById(R.id.rv_items)
         rv_items.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = itemsAdapter
-//            setOnTouchListener { _, event ->
-//                return@setOnTouchListener gesturesDetector.onTouchEvent(event)
-//            }
         }
 
         header = HeaderViewHolder(findViewById(R.id.ll_header))
@@ -212,8 +185,6 @@ class MainActivity : AppCompatActivity() {
         actions.apply {
             ib_add.setOnClickListener {
                 itemsAdapter.add(MarketItem())
-//            val pos = viewAdapter.itemCount - 1
-//            recyclerView.scrollToPosition(pos)
             }
             ib_paste.setOnClickListener {
                 if(clipboard.hasPrimaryClip() and
@@ -240,12 +211,6 @@ class MainActivity : AppCompatActivity() {
                     .setNegativeButton(android.R.string.no, null)
                     .show()
             }
-            ib_previous.setOnClickListener {
-                onPreviousState()
-            }
-            ib_next.setOnClickListener {
-                onNextState()
-            }
         }
     }
 
@@ -265,20 +230,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-//    private fun onSwipeCompleted(delta: Float) {
-//        when(state) {
-//            State.PLAN ->
-//                if(delta < 0)
-//                    state = State.BUY
-//            State.BUY ->
-//                state = if(delta > 0)
-//                    State.PLAN
-//                else State.VERIFY
-//            State.VERIFY ->
-//                if(delta > 0)
-//                    state = State.BUY
-//        }
-//    }
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        if(ev == null) return false
+        if(swipeDetector.onInterceptTouchEvent(ev)) return onTouchEvent(ev)
+        return super.dispatchTouchEvent(ev)
+    }
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        if(event == null) return false
+        if(swipeDetector.onTouchEvent(event)) return true
+        return super.onTouchEvent(event)
+    }
 
     override fun onPause() {
         super.onPause()
@@ -291,5 +253,12 @@ class MainActivity : AppCompatActivity() {
         MarketData.loadPreferences(this)
         MarketTouchHelper(itemsAdapter).attachToRecyclerView(rv_items)
         itemsAdapter.load()
+    }
+
+    override fun onSwipe(deltaX: Float, deltaY: Float) {
+        if(deltaX < 0)
+            onNextState()
+        else
+            onPreviousState()
     }
 }
