@@ -3,6 +3,8 @@ package did.pinbraerts.market
 import android.content.Context
 import java.io.InputStreamReader
 import java.io.OutputStreamWriter
+import java.text.DecimalFormat
+import java.text.ParseException
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -13,6 +15,7 @@ object MarketData {
 
     var palette: IntArray = IntArray(0)
     private val colorPreferences: HashMap<String, Int> = HashMap()
+    private val format = DecimalFormat()
 
     fun loadPreferences(context: Context) {
         if (colorPreferences.isNotEmpty())
@@ -64,4 +67,10 @@ object MarketData {
 
     fun preference(item: MarketItem) =
         colorPreferences.getOrElse(item.name.toLowerCase(Locale.getDefault())) { item.color }
+
+    fun format(number: Float): String =
+        format.format(number)
+
+    fun parse(string: String): Float =
+        string.toFloatOrZero()
 }

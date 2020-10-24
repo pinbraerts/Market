@@ -49,12 +49,7 @@ object TextWatchers {
         }
 
         override fun afterTextChanged(e: Editable) {
-            try {
-                val b = NumberFormat.getInstance().parse(e.toString()) ?: 0
-                target(b)
-            } catch (e: ParseException) {
-                target(0)
-            }
+            target(MarketData.parse(e.toString()))
         }
     }
 }

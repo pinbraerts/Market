@@ -4,12 +4,12 @@ import android.text.InputType
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import java.text.NumberFormat
 
 class MarketItemViewHolder(
     view: View,
-    state: MainActivity.State,
     val adapter: MarketItemAdapter,
     val v_color: View = view.findViewById(R.id.v_color),
     val et_name: EditText = view.findViewById(R.id.et_name),
@@ -18,9 +18,12 @@ class MarketItemViewHolder(
     val et_cost: EditText = view.findViewById(R.id.et_cost),
     val tv_equals: TextView = view.findViewById(R.id.tv_equals),
     val et_price: EditText = view.findViewById(R.id.et_price),
-    val v_divider: View = view.findViewById(R.id.v_divider),
     val tv_discrepancy: TextView = view.findViewById(R.id.tv_discrepancy)
 ): RecyclerView.ViewHolder(view) {
+    companion object {
+        const val TYPE_NUMBER = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
+    }
+
     private val listeners = arrayOf(
         TextWatchers.PlainString { newData ->
             adapter.setName(adapterPosition, newData, false)
@@ -40,8 +43,6 @@ class MarketItemViewHolder(
     )
 
     init {
-        setState(state)
-
         et_name.onFocusChangeListener = adapter.focusChangedListener
         et_amount.onFocusChangeListener = adapter.focusChangedListener
         et_cost.onFocusChangeListener = adapter.focusChangedListener
@@ -49,18 +50,18 @@ class MarketItemViewHolder(
 
         et_name.addTextChangedListener(listeners[0])
         et_amount.addTextChangedListener(listeners[1])
-        et_cost.addTextChangedListener(listeners[3])
-        et_price.addTextChangedListener(listeners[4])
+        et_price.addTextChangedListener(listeners[3])
+        et_cost.addTextChangedListener(listeners[4])
     }
 
-    fun amountUpdateState(state: MainActivity.State) {
+    private fun amountUpdateState(state: MainActivity.State, item: MarketItem) {
         with(et_amount) {
             when (state) {
                 MainActivity.State.PLAN -> {
                     if(inputType != InputType.TYPE_CLASS_TEXT) {
                         et_amount.removeTextChangedListener(listeners[2])
                         et_amount.inputType = InputType.TYPE_CLASS_TEXT
-                        et_amount.text.clear()
+                        et_amount.setText(item.amount, TextView.BufferType.EDITABLE)
                         et_amount.addTextChangedListener(listeners[1])
                     }
                     et_amount.unFreeze()
@@ -69,25 +70,26 @@ class MarketItemViewHolder(
                     if(inputType != InputType.TYPE_CLASS_TEXT) {
                         et_amount.removeTextChangedListener(listeners[2])
                         et_amount.inputType = InputType.TYPE_CLASS_TEXT
-                        et_amount.text.clear()
+                        et_amount.setText(item.amount, TextView.BufferType.EDITABLE)
                         et_amount.addTextChangedListener(listeners[1])
                     }
                     et_amount.freeze()
                 }
                 MainActivity.State.VERIFY -> {
-                    if(et_amount.inputType != InputType.TYPE_CLASS_NUMBER) {
+                    if(et_amount.inputType != TYPE_NUMBER) {
                         et_amount.removeTextChangedListener(listeners[1])
-                        et_amount.inputType = InputType.TYPE_CLASS_NUMBER
-                        et_amount.text.clear()
+                        et_amount.inputType = TYPE_NUMBER
+                        et_amount.setText(MarketData.format(item.weight), TextView.BufferType.EDITABLE)
                         et_amount.addTextChangedListener(listeners[2])
                     }
+                    et_amount.unFreeze()
                 }
             }
         }
     }
 
-    fun setState(state: MainActivity.State) {
-        amountUpdateState(state)
+    fun setState(state: MainActivity.State, item: MarketItem) {
+        amountUpdateState(state, item)
         when(state) {
             MainActivity.State.PLAN -> {
                 et_name.unFreeze()
@@ -150,7 +152,7 @@ class MarketItemViewHolder(
     fun setWeight(weight: Float) {
         with(et_amount) {
             removeTextChangedListener(listeners[2])
-            setText(NumberFormat.getInstance().format(weight), TextView.BufferType.EDITABLE)
+            setText(MarketData.format(weight), TextView.BufferType.EDITABLE)
             addTextChangedListener(listeners[2])
         }
     }
@@ -158,7 +160,7 @@ class MarketItemViewHolder(
     fun setPrice(price: Float) {
         with(et_price) {
             removeTextChangedListener(listeners[3])
-            setText(NumberFormat.getInstance().format(price), TextView.BufferType.EDITABLE)
+            setText(MarketData.format(price), TextView.BufferType.EDITABLE)
             addTextChangedListener(listeners[3])
         }
     }
@@ -166,19 +168,30 @@ class MarketItemViewHolder(
     fun setCost(cost: Float) {
         with(et_cost) {
             removeTextChangedListener(listeners[4])
-            setText(NumberFormat.getInstance().format(cost), TextView.BufferType.EDITABLE)
+            setText(MarketData.format(cost), TextView.BufferType.EDITABLE)
             addTextChangedListener(listeners[4])
         }
     }
 
+    fun setDiscrepancy(discrepancy: Float) {
+        with(tv_discrepancy) {
+            text = MarketData.format(discrepancy)
+            setTextColor(ContextCompat.getColor(context,
+                if(discrepancy > -0.1f) R.color.correct
+                else R.color.wrong
+            ))
+        }
+    }
+
     fun setItem(state: MainActivity.State, item: MarketItem) {
-        setState(state)
+        setState(state, item)
         setColor(item.color)
         setName(item.name)
         if(state == MainActivity.State.VERIFY) setWeight(item.weight)
         else setAmount(item.amount)
         setPrice(item.price)
         setCost(item.cost)
+        setDiscrepancy(item.discrepancy)
         et_name.requestFocus()
         et_name.showKeyboard()
     }
