@@ -1,8 +1,7 @@
 package did.pinbraerts.market
 
-import android.annotation.SuppressLint
 import android.content.*
-import androidx.appcompat.app.AppCompatActivity
+import android.graphics.RectF
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
@@ -11,6 +10,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -76,9 +76,6 @@ class MainActivity : AppCompatActivity(), SwipeDetector.SwipeListener {
         var tv_summary_cost: TextView = ll_summary.findViewById(R.id.tv_summary_cost),
         var tv_summary_discrepancy: TextView = ll_summary.findViewById(R.id.tv_summary_discrepancy),
     ) {
-        private val context: Context
-            get() = ll_summary.context
-
         var cost: Float = 0f
             set(value) {
                 field = value
@@ -126,11 +123,11 @@ class MainActivity : AppCompatActivity(), SwipeDetector.SwipeListener {
 
     private var data: ArrayList<MarketItem> = arrayListOf()
 
-    private val width: Int
-        get() = window.decorView.width
+    private val width: Float
+        get() = rv_items.rootView.width.toFloat()
 
-    private val height: Int
-        get() = window.decorView.height
+    private val height: Float
+        get() = rv_items.rootView.height.toFloat()
 
     enum class State {
         PLAN,
@@ -155,7 +152,6 @@ class MainActivity : AppCompatActivity(), SwipeDetector.SwipeListener {
             field = value
         }
 
-    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -163,13 +159,22 @@ class MainActivity : AppCompatActivity(), SwipeDetector.SwipeListener {
         MarketData.loadPalette(this)
 
         itemsAdapter = MarketItemAdapter(MarketData.ITEMS_FILE_NAME, data, this)
-        swipeDetector = SwipeDetector(this)
-        swipeDetector.setSwipeListener(this)
 
         rv_items = findViewById(R.id.rv_items)
         rv_items.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = itemsAdapter
+            recycledViewPool.setMaxRecycledViews(0, 10)
+        }.post {
+            swipeDetector = SwipeDetector(
+                this, RectF(
+                    width * 0.6f,
+                    0f,
+                    width,
+                    height
+                )
+            )
+            swipeDetector.setSwipeListener(this)
         }
 
         header = HeaderViewHolder(findViewById(R.id.ll_header))

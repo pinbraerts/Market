@@ -1,6 +1,7 @@
 package did.pinbraerts.market
 
 import android.content.Context
+import android.graphics.RectF
 import android.view.MotionEvent
 import android.view.VelocityTracker
 import android.view.ViewConfiguration
@@ -8,6 +9,7 @@ import kotlin.math.abs
 
 class SwipeDetector(
     context: Context,
+    var swipeStartRect: RectF,
     config: ViewConfiguration = ViewConfiguration.get(context),
     private val touchSlop: Int = config.scaledTouchSlop,
     private val maxVelocity: Int = config.scaledMaximumFlingVelocity,
@@ -49,6 +51,29 @@ class SwipeDetector(
         lastX = initialX
         lastY = initialY
         activePointerId = event.getPointerId(0)
+
+        obtain()
+    }
+
+    private fun obtain(): VelocityTracker {
+        if (velocityTracker == null)
+            velocityTracker = VelocityTracker.obtain()
+        return velocityTracker!!
+    }
+
+    private fun continueMotion(event: MotionEvent) {
+        val index = event.findPointerIndex(activePointerId)
+        val x = event.getX(index)
+        val y = event.getY(index)
+        val dx = abs(x - lastX)
+        val dy = abs(y - lastY)
+
+        if(dx > touchSlop && dx * 0.5 > dy && swipeStartRect.contains(initialX, initialY)) {
+            lastX = if(x > initialX) initialX + touchSlop
+            else initialX - touchSlop
+            lastY = y
+            isSwiping = true
+        }
     }
 
     fun onInterceptTouchEvent(event: MotionEvent): Boolean {
@@ -57,29 +82,16 @@ class SwipeDetector(
         if(action == MotionEvent.ACTION_CANCEL || action == MotionEvent.ACTION_UP)
             return isSwiping
 
-        if(action != MotionEvent.ACTION_DOWN || isSwiping)
+        if(action != MotionEvent.ACTION_DOWN && isSwiping)
             return true
 
         when(action) {
-            MotionEvent.ACTION_MOVE -> if(activePointerId != MotionEvent.INVALID_POINTER_ID) {
-                val index = event.findPointerIndex(activePointerId)
-                val x = event.getX(index)
-                val y = event.getY(index)
-                val dx = abs(x - lastX)
-                val dy = abs(y - lastY)
-
-                if(dx > touchSlop && dx * 0.5 > dy) {
-                    lastX = if(x > initialX) initialX + touchSlop
-                        else initialX - touchSlop
-                    lastY = y
-                    isSwiping = true
-                }
-            }
+            MotionEvent.ACTION_MOVE ->
+                if(activePointerId != MotionEvent.INVALID_POINTER_ID)
+                    continueMotion(event)
             MotionEvent.ACTION_DOWN -> startMotion(event)
         }
 
-        if(velocityTracker == null)
-            velocityTracker = VelocityTracker.obtain()
         velocityTracker?.addMovement(event)
 
         return isSwiping
@@ -89,27 +101,13 @@ class SwipeDetector(
         if(event.action == MotionEvent.ACTION_DOWN && event.edgeFlags != 0)
             return false
 
-        if(velocityTracker == null) {
-            velocityTracker = VelocityTracker.obtain()
-        }
         velocityTracker?.addMovement(event)
 
         when(event.actionMasked) {
             MotionEvent.ACTION_DOWN -> startMotion(event)
             MotionEvent.ACTION_MOVE -> {
                 if(!isSwiping) {
-                    val index = event.findPointerIndex(activePointerId)
-                    val x = event.getX(index)
-                    val y = event.getY(index)
-                    val dx = abs(x - lastX)
-                    val dy = abs(y - lastY)
-
-                    if(dx > touchSlop && dx > dy) {
-                        isSwiping = true
-                        lastX = if(x > initialX) initialX + touchSlop
-                            else initialX - touchSlop
-                        lastY = y
-                    }
+                    continueMotion(event)
                 }
 //                if(isSwiping) {
 //                    TOOD("Perform swipe")
@@ -126,8 +124,7 @@ class SwipeDetector(
                 }
                 reset()
             }
-            MotionEvent.ACTION_CANCEL -> if(isSwiping)
-                reset()
+            MotionEvent.ACTION_CANCEL -> if(isSwiping) reset()
         }
 
         return true
