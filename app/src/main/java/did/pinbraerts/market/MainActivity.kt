@@ -192,8 +192,8 @@ class MainActivity : AppCompatActivity(), SwipeDetector.SwipeListener {
                 itemsAdapter.add(MarketItem())
             }
             ib_paste.setOnClickListener {
-                if(clipboard.hasPrimaryClip() and
-                    (clipboard.primaryClipDescription?.hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN) == true)
+                if(clipboard.hasPrimaryClip() &&
+                    clipboard.primaryClipDescription?.hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN) == true
                 ) {
                     val data = clipboard.primaryClip?.getItemAt(0)?.text ?: ""
                     if(data.isEmpty())
@@ -203,8 +203,14 @@ class MainActivity : AppCompatActivity(), SwipeDetector.SwipeListener {
                 }
             }
             ib_copy.setOnClickListener {
-                clipboard.setPrimaryClip(ClipData.newPlainText("simple text", itemsAdapter.toPlainText()))
-                Toast.makeText(this@MainActivity, getString(R.string.popup_copied), Toast.LENGTH_SHORT).show()
+                clipboard.setPrimaryClip(ClipData.newPlainText(
+                    "simple text", itemsAdapter.copy()
+                ))
+                Toast.makeText(
+                    this@MainActivity,
+                    getString(R.string.popup_copied),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
             ib_clear.setOnClickListener {
                 AlertDialog.Builder(this@MainActivity)

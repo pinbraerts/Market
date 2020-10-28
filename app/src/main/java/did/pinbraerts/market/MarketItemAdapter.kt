@@ -5,12 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import java.io.InputStreamReader
-import java.io.OutputStreamWriter
+import java.io.ObjectInputStream
+import java.io.ObjectOutputStream
 
 class MarketItemAdapter(
     val filename: String,
-    val data: ArrayList<MarketItem>,
+    val data: MarketItems,
     val activity: MainActivity
 ): RecyclerView.Adapter<MarketItemViewHolder>() {
     private var focusedHolder: MarketItemViewHolder? = null
@@ -18,13 +18,10 @@ class MarketItemAdapter(
     val focusChangedListener = View.OnFocusChangeListener { view, focused ->
         focusedHolder =
             if(focused) {
-//                activity.w_color_picker.show()
+//                (view as? EditText)?.showKeyboard()
                 activity.rv_items.findContainingViewHolder(view) as? MarketItemViewHolder
             }
-            else {
-//                activity.w_color_picker.hide()
-                null
-            }
+            else null
     }
 
     fun colorChanged(color: Int) {
@@ -195,36 +192,28 @@ class MarketItemAdapter(
     fun paste(s: String) {
         s.split(',', '\n')
             .filter(String::isNotBlank)
-            .map(MarketItem::fromClipboard)
-            .forEach(::add)
+            .forEach {
+                add(MarketItem.from(it))
+            }
     }
 
-    fun toPlainText() =
-        data.filter(MarketItem::isValid)
-            .joinToString("\n", transform = MarketItem::toClipboard)
+    fun copy() = data.joinToString("\n", transform = MarketItem::toString)
 
     fun load() {
         if(data.isNotEmpty())
             return
         if(!activity.getFileStreamPath(filename).exists())
             return
-        load(InputStreamReader(activity.openFileInput(filename)))
-    }
-
-    fun load(reader: InputStreamReader) {
-        reader.useLines {
-            it.filter(String::isNotBlank).map(MarketItem::deserialize).forEach(::add)
+        ObjectInputStream(activity.openFileInput(filename)).use { stream ->
+            when(val v = stream.readObject()) {
+                is ArrayList<*> -> v.filterIsInstance<MarketItem>().forEach(::add)
+                else -> return
+            }
         }
-        reader.close()
     }
 
     fun save() =
-        save(OutputStreamWriter(activity.openFileOutput(filename, Context.MODE_PRIVATE)))
-
-    fun save(writer: OutputStreamWriter) {
-        data.filter(MarketItem::isValid).forEach {
-            writer.write(it.serialize() + '\n')
+        ObjectOutputStream(activity.openFileOutput(filename, Context.MODE_PRIVATE)).use {
+            it.writeObject(data)
         }
-        writer.close()
-    }
 }
