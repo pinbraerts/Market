@@ -39,7 +39,6 @@
     <EditText
         android:id="@+id/et_amount"
         style="@style/et_base"
-        android:inputType="text"
         android:layout_weight="1"
         android:importantForAutofill="no"
         android:hint="@string/zero"

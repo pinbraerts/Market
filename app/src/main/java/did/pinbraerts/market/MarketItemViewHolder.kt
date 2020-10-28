@@ -21,6 +21,7 @@ class MarketItemViewHolder(
 ): RecyclerView.ViewHolder(view) {
     companion object {
         const val TYPE_NUMBER = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
+        const val TYPE_TEXT = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
     }
 
     private val listeners = arrayOf(
@@ -57,18 +58,18 @@ class MarketItemViewHolder(
         with(et_amount) {
             when (state) {
                 MainActivity.State.PLAN -> {
-                    if(inputType != InputType.TYPE_CLASS_TEXT) {
+                    if(inputType != TYPE_TEXT) {
                         et_amount.removeTextChangedListener(listeners[2])
-                        et_amount.inputType = InputType.TYPE_CLASS_TEXT
+                        et_amount.inputType = TYPE_TEXT
                         et_amount.setText(item.amount, TextView.BufferType.EDITABLE)
                         et_amount.addTextChangedListener(listeners[1])
                     }
                     et_amount.unFreeze()
                 }
                 MainActivity.State.BUY -> {
-                    if(inputType != InputType.TYPE_CLASS_TEXT) {
+                    if(inputType != TYPE_TEXT) {
                         et_amount.removeTextChangedListener(listeners[2])
-                        et_amount.inputType = InputType.TYPE_CLASS_TEXT
+                        et_amount.inputType = TYPE_TEXT
                         et_amount.setText(item.amount, TextView.BufferType.EDITABLE)
                         et_amount.addTextChangedListener(listeners[1])
                     }
