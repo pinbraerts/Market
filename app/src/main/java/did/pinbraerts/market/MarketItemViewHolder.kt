@@ -6,7 +6,6 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import java.text.NumberFormat
 
 class MarketItemViewHolder(
     view: View,
@@ -192,7 +191,5 @@ class MarketItemViewHolder(
         setPrice(item.price)
         setCost(item.cost)
         setDiscrepancy(item.discrepancy)
-        et_name.requestFocus()
-        et_name.showKeyboard()
     }
 }
