@@ -4,10 +4,7 @@ import android.content.Context
 import java.io.InputStreamReader
 import java.io.OutputStreamWriter
 import java.text.DecimalFormat
-import java.text.ParseException
 import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 object MarketData {
     const val ITEMS_FILE_NAME: String = "items.txt"
@@ -65,8 +62,11 @@ object MarketData {
         output.close()
     }
 
-    fun preference(item: MarketItem) =
+    fun preferenceOrItself(item: MarketItem) =
         colorPreferences.getOrElse(item.name.toLowerCase(Locale.getDefault())) { item.color }
+
+    fun preferenceOrNull(item: MarketItem) =
+        colorPreferences.getOrElse(item.name.toLowerCase(Locale.getDefault())) { null }
 
     fun format(number: Float): String =
         format.format(number)
