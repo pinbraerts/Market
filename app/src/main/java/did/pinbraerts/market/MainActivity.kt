@@ -115,13 +115,13 @@ class MainActivity : AppCompatActivity(), SwipeDetector.SwipeListener {
     private lateinit var w_color_picker: ColorPicker
 
     private lateinit var header: HeaderViewHolder
-    lateinit var summary: SummaryViewHolder
+    internal lateinit var summary: SummaryViewHolder
     private lateinit var actions: ActionsViewHolder
 
     private lateinit var itemsAdapter: MarketItemAdapter
     private lateinit var swipeDetector: SwipeDetector
 
-    private var data: ArrayList<MarketItem> = arrayListOf()
+    internal val filename: String = MarketData.ITEMS_FILE_NAME
 
     private val width: Float
         get() = rv_items.rootView.width.toFloat()
@@ -136,10 +136,7 @@ class MainActivity : AppCompatActivity(), SwipeDetector.SwipeListener {
     }
 
     private fun onStateChange(newState: State) {
-        rv_items.visibleViewHolders().forEach {
-            if(it is MarketItemViewHolder)
-                it.setState(newState, data[it.adapterPosition])
-        }
+        itemsAdapter.setState(newState)
         summary.setState(newState)
         header.setState(newState)
         actions.setState(newState)
@@ -158,7 +155,7 @@ class MainActivity : AppCompatActivity(), SwipeDetector.SwipeListener {
 
         MarketData.loadPalette(this)
 
-        itemsAdapter = MarketItemAdapter(MarketData.ITEMS_FILE_NAME, data, this)
+        itemsAdapter = MarketItemAdapter(this)
 
         rv_items = findViewById(R.id.rv_items)
         rv_items.apply {
@@ -175,6 +172,7 @@ class MainActivity : AppCompatActivity(), SwipeDetector.SwipeListener {
                 )
             )
             swipeDetector.setSwipeListener(this)
+            itemsAdapter.post()
         }
 
         header = HeaderViewHolder(findViewById(R.id.ll_header))
@@ -182,7 +180,7 @@ class MainActivity : AppCompatActivity(), SwipeDetector.SwipeListener {
         actions = ActionsViewHolder(findViewById(R.id.ll_actions))
 
         w_color_picker = findViewById(R.id.w_color_picker)
-        w_color_picker.setOnColorPickerListener(itemsAdapter::colorChanged)
+        w_color_picker.setOnColorPickerListener(itemsAdapter)
 
         onStateChange(State.PLAN)
 
@@ -217,7 +215,7 @@ class MainActivity : AppCompatActivity(), SwipeDetector.SwipeListener {
                     .setTitle(getString(R.string.remove_all_title))
                     .setMessage(getString(R.string.remove_all_message))
                     .setPositiveButton(android.R.string.yes) { _: DialogInterface, _: Int ->
-                        itemsAdapter.removeAll()
+                        itemsAdapter.clear()
                     }
                     .setNegativeButton(android.R.string.no, null)
                     .show()
@@ -255,7 +253,7 @@ class MainActivity : AppCompatActivity(), SwipeDetector.SwipeListener {
 
     override fun onPause() {
         super.onPause()
-        MarketData.savePreferences(this, data)
+        MarketData.savePreferences(this, itemsAdapter.data)
         itemsAdapter.save()
     }
 
