@@ -225,7 +225,7 @@ class MainActivity : AppCompatActivity(), SwipeDetector.SwipeListener {
         }
     }
 
-    private fun onPreviousState() {
+    private fun previousState() {
         state = when (state) {
             State.PLAN -> State.PLAN
             State.BUY -> State.PLAN
@@ -233,7 +233,7 @@ class MainActivity : AppCompatActivity(), SwipeDetector.SwipeListener {
         }
     }
 
-    private fun onNextState() {
+    private fun nextState() {
         state = when (state) {
             State.PLAN -> State.BUY
             State.BUY -> State.VERIFY
@@ -268,8 +268,8 @@ class MainActivity : AppCompatActivity(), SwipeDetector.SwipeListener {
 
     override fun onSwipe(deltaX: Float, deltaY: Float) {
         if(deltaX < 0)
-            onNextState()
+            nextState()
         else
-            onPreviousState()
+            previousState()
     }
 }
