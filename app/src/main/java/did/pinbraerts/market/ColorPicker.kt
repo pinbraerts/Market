@@ -77,23 +77,7 @@ class ColorPicker: View {
         return true
     }
 
-//    fun setOnColorPickedListener(l: OnColorPickedListener) {
-//        listener = l
-//    }
-
-    fun setOnColorPickerListener(l: (Int) -> Unit) {
-        listener = object : OnColorPickedListener {
-            override fun onColorPicked(color: Int) {
-                l(color)
-            }
-        }
+    fun setOnColorPickerListener(l: OnColorPickedListener) {
+        listener = l
     }
-
-//    fun show() {
-//        visibility = VISIBLE
-//    }
-//
-//    fun hide() {
-//        visibility = GONE
-//    }
 }
