@@ -1,19 +1,45 @@
 package did.pinbraerts.market
 
 import android.content.Context
+import android.graphics.Canvas
+import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 
 class MarketItemAdapter(
-    val filename: String,
-    val data: MarketItems,
-    val activity: MainActivity
-): RecyclerView.Adapter<MarketItemViewHolder>() {
+    val activity: MainActivity,
+    val data: MarketItems = arrayListOf()
+): RecyclerView.Adapter<MarketItemViewHolder>(), ColorPicker.OnColorPickedListener {
     private var focusedHolder: MarketItemViewHolder? = null
+    private val sections: IntArray = IntArray(8)
+    private val colorOrder: IntArray = IntArray(8) { 7 - it }
+
+    fun post() {
+        activity.rv_items.addItemDecoration(object : RecyclerView.ItemDecoration() {
+            val paint: Paint = Paint().apply {
+                style = Paint.Style.STROKE
+                color = ContextCompat.getColor(activity, android.R.color.darker_gray)
+            }
+
+            override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+                val left = parent.paddingLeft.toFloat()
+                val right = parent.width.toFloat() - parent.paddingRight
+
+                sections.forEach {
+                    parent.findViewHolderForAdapterPosition(it)?.let { vh ->
+                        paint.color = MarketData.palette[data[it].color]
+                        val y = vh.itemView.y - 10
+                        c.drawLine(left, y, right, y, paint)
+                    }
+                }
+            }
+        })
+    }
 
     val focusChangedListener = View.OnFocusChangeListener { view, focused ->
         focusedHolder =
@@ -24,7 +50,7 @@ class MarketItemAdapter(
             else null
     }
 
-    fun colorChanged(color: Int) {
+    override fun onColorPicked(color: Int) {
         focusedHolder?.let {
             setColor(it.adapterPosition, color)
         }
@@ -44,97 +70,117 @@ class MarketItemAdapter(
     override fun getItemCount(): Int =
         data.size
 
-    fun getViewHolder(index: Int) =
+    private fun getViewHolder(index: Int) =
         activity.rv_items.findViewHolderForAdapterPosition(index) as? MarketItemViewHolder
 
-    fun insert(item: MarketItem, index: Int) {
+    private fun insert(item: MarketItem, index: Int) {
         data.add(index, item)
+
         afterUpdate(index)
         notifyItemInserted(index)
     }
 
     fun add(item: MarketItem) {
-        item.color = MarketData.preference(item)
-        return insert(item, indexFor(item.color))
+        MarketData.preferenceOrNull(item)?.let {
+            item.color = it
+        }
+        val section = order(item.color)
+        (section + 1 until sections.size).forEach {
+            ++sections[it]
+        }
+        return insert(item, sections[section])
     }
 
-    private fun indexFor(color: Int): Int {
-        var i = data.binarySearch { color - it.color }
+    private fun order(color: Int) = colorOrder[color]
+
+    private fun sectionIndex(itemIndex: Int): Int {
+        var i = sections.binarySearch(itemIndex)
         if(i < 0) i = -(i + 1)
+        while(i > 0 && sections[i - 1] == itemIndex)
+            --i
         return i
     }
 
     fun remove(index: Int) {
         beforeUpdate(index)
+        val section = sectionIndex(index)
+        (section + 1 until sections.size).forEach {
+            --sections[it]
+        }
         data.removeAt(index)
         notifyItemRemoved(index)
     }
 
     fun move(fromPosition: Int, toPosition: Int) {
+        val fromSection = order(data[fromPosition].color)
+        val toSection = sectionIndex(toPosition)
+
+        if(fromSection < toSection) {
+            (fromSection + 1 .. toSection).forEach {
+                --sections[it]
+            }
+        }
+        else if(fromSection > toSection) {
+            (toSection + 1 .. fromSection).forEach {
+                ++sections[it]
+            }
+        }
+
         data.add(toPosition, data.removeAt(fromPosition))
         notifyItemMoved(fromPosition, toPosition)
     }
 
-//    open fun insertAll(items: Collection<MarketItem>, index: Int) {
-//        val new_items = items.map {
-//            it.color = MarketData.colorPreferences.getOrElse(it.name, { it.color })
-//            it
-//        }.toList()
-//        data.addAll(index, new_items)
-//        (index until index + new_items.size).forEach { afterUpdate(it) }
-//        notifyItemRangeInserted(index, items.size)
-//        anyUpdate()
-//    }
+    private fun moveToSection(fromPosition: Int, section: Int): Int {
+        val fromSection = order(data[fromPosition].color)
+        val toPosition = sections[section]
 
-    fun removeAll(fromPosition: Int, toPosition: Int) {
-        (fromPosition until toPosition).forEach { beforeUpdate(it) }
-        data.subList(fromPosition, toPosition).clear()
-        notifyItemRangeRemoved(fromPosition, toPosition - fromPosition)
+        if(fromSection < section) {
+            (fromSection + 1 .. section).forEach {
+                --sections[it]
+            }
+        }
+        else if(fromSection > section) {
+            (section + 1 .. fromSection).forEach {
+                ++sections[it]
+            }
+        }
+
+        data.add(toPosition, data.removeAt(fromPosition))
+        notifyItemMoved(fromPosition, toPosition)
+        return toPosition
     }
 
-    fun removeAll(fromPosition: Int) =
-        removeAll(fromPosition, data.size)
-
-    fun removeAll() =
-        removeAll(0)
+    fun clear() {
+        sections.fill(0)
+        data.clear()
+        notifyItemRangeRemoved(0, data.size)
+    }
 
     fun setColor(index: Int, color: Int, shouldUpdateView: Boolean = true) {
         if(color == data[index].color)
             return
 
-        var i = indexFor(color)
-        if(index < i)
-            i -= 1
+        val i = moveToSection(index, order(color))
 
-        beforeUpdate(index)
-        data[index].color = color
+        data[i].color = color
         if(shouldUpdateView)
-            getViewHolder(index)?.setColor(color)
-        afterUpdate(index)
-
-        move(index, i)
+            getViewHolder(i)?.setColor(color)
     }
 
     fun setName(index: Int, name: String, shouldUpdateView: Boolean = true) {
-        beforeUpdate(index)
-
         data[index].name = name
         if(shouldUpdateView)
             getViewHolder(index)?.setName(name)
 
-        setColor(index, MarketData.preference(data[index]))
-
-        afterUpdate(index)
+        MarketData.preferenceOrNull(data[index])?.let {
+            setColor(index, it)
+        }
     }
 
     fun setAmount(index: Int, amount: String, shouldUpdateView: Boolean = false) {
-        beforeUpdate(index)
-
         data[index].amount = amount
         if(shouldUpdateView)
             getViewHolder(index)?.setAmount(amount)
-
-        afterUpdate(index)
     }
 
     fun setWeight(index: Int, weight: Float, shouldUpdateView: Boolean = false) {
@@ -175,6 +221,13 @@ class MarketItemAdapter(
         afterUpdate(index)
     }
 
+    fun setState(newState: MainActivity.State) {
+        activity.rv_items.visibleViewHolders().forEach {
+            if(it is MarketItemViewHolder)
+                it.setState(newState, data[it.adapterPosition])
+        }
+    }
+
     private fun beforeUpdate(index: Int) {
         with(data[index]) {
             activity.summary.cost -= cost
@@ -202,9 +255,9 @@ class MarketItemAdapter(
     fun load() {
         if(data.isNotEmpty())
             return
-        if(!activity.getFileStreamPath(filename).exists())
+        if(!activity.getFileStreamPath(activity.filename).exists())
             return
-        ObjectInputStream(activity.openFileInput(filename)).use { stream ->
+        ObjectInputStream(activity.openFileInput(activity.filename)).use { stream ->
             when(val v = stream.readObject()) {
                 is ArrayList<*> -> v.filterIsInstance<MarketItem>().forEach(::add)
                 else -> return
@@ -213,7 +266,7 @@ class MarketItemAdapter(
     }
 
     fun save() =
-        ObjectOutputStream(activity.openFileOutput(filename, Context.MODE_PRIVATE)).use {
+        ObjectOutputStream(activity.openFileOutput(activity.filename, Context.MODE_PRIVATE)).use {
             it.writeObject(data)
         }
 }
