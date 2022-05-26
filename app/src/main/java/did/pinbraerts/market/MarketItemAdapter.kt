@@ -7,16 +7,21 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import java.io.ObjectInputStream
-import java.io.ObjectOutputStream
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import java.util.*
+
 
 class MarketItemAdapter(
     val activity: MainActivity,
     val data: MarketItems = arrayListOf()
 ): RecyclerView.Adapter<MarketItemViewHolder>(), ColorPicker.OnColorPickedListener {
     private var focusedHolder: MarketItemViewHolder? = null
-    private val sections: IntArray = IntArray(8)
-    private val colorOrder: IntArray = IntArray(8) { 7 - it }
+    private val dbHelper = DBHelper(activity)
+    var palette: IntArray = IntArray(0)
+    private val colorPreferences: HashMap<String, Int> = HashMap()
+    private val scope = CoroutineScope(Job())
 
     fun post() {
         activity.rv_items.addItemDecoration(object : RecyclerView.ItemDecoration() {
@@ -242,30 +247,46 @@ class MarketItemAdapter(
     }
 
     fun paste(s: String) {
-        s.split(',', '\n')
-            .filter(String::isNotBlank)
-            .forEach {
-                add(MarketItem.from(it))
-            }
+        scope.launch {
+            s.split(',', '\n')
+                .filter(String::isNotBlank)
+                .forEach {
+                    val m = MarketItem.from(it)
+                    activity.runOnUiThread {
+                        add(m)
+                    }
+                }
+        }
     }
 
-    fun copy() = data.joinToString("\n", transform = MarketItem::toString)
+    fun copy() = array.data.joinToString("\n", transform = MarketItem::toString)
 
     fun load() {
-        if(data.isNotEmpty())
-            return
-        if(!activity.getFileStreamPath(activity.filename).exists())
-            return
-        ObjectInputStream(activity.openFileInput(activity.filename)).use { stream ->
-            when(val v = stream.readObject()) {
-                is ArrayList<*> -> v.filterIsInstance<MarketItem>().forEach(::add)
-                else -> return
+        if(palette.isEmpty())
+            palette = activity.resources.getIntArray(R.array.user_palette)
+
+        scope.launch {
+            dbHelper.readableDatabase.use {
+                dbHelper.readPreferences(colorPreferences::plusAssign)
+                dbHelper.readSnapshot {
+                    activity.runOnUiThread {
+                        add(it)
+                    }
+                }
+            }
+            dbHelper.writableDatabase.use {
+
             }
         }
     }
 
-    fun save() =
-        ObjectOutputStream(activity.openFileOutput(activity.filename, Context.MODE_PRIVATE)).use {
-            it.writeObject(data)
+    fun save() {
+        dbHelper.clear()
+        array.data.forEach {
+            colorPreferences[it.name.lowercase(Locale.getDefault())] = it.color
         }
+        dbHelper.writePreferences(colorPreferences)
+        dbHelper.writeSnapshot(array.data)
+        clear()
+    }
 }

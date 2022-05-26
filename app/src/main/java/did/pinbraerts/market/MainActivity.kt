@@ -124,8 +124,6 @@ class MainActivity : AppCompatActivity(), SwipeDetector.SwipeListener {
     private lateinit var itemsAdapter: MarketItemAdapter
     private lateinit var swipeDetector: SwipeDetector
 
-    internal val filename: String = MarketData.ITEMS_FILE_NAME
-
     private val width: Float
         get() = rv_items.rootView.width.toFloat()
 
