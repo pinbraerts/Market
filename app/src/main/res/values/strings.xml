@@ -22,4 +22,10 @@
     <string name="previous">previous</string>
     <string name="next">next</string>
     <string name="db_name" translatable="false">market</string>
+    <string name="tb_preferences" translatable="false">preferences</string>
+    <string name="tb_snapshot" translatable="false">snapshot</string>
+    <string name="cmd_drop_table" translatable="false">drop table if exists %1s</string>
+    <string name="cmd_create_preferences" translatable="false">create table %1s (name text unique, color integer)</string>
+    <string name="cmd_create_snapshot" translatable="false">create table %1s (name text unique, amount text, weight real, price real, cost real, color integer)</string>
+    <string name="cmd_select_all" translatable="false">select * from %1s</string>
 </resources>
