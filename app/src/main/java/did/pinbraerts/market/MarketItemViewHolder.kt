@@ -6,6 +6,7 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import java.text.DecimalFormat
 
 class MarketItemViewHolder(
     view: View,
@@ -41,6 +42,8 @@ class MarketItemViewHolder(
             adapter.setCost(bindingAdapterPosition, newData.toFloat(), false)
         }
     )
+
+    private val format = DecimalFormat()
 
     init {
         et_name.onFocusChangeListener = adapter.focusChangedListener
@@ -79,7 +82,7 @@ class MarketItemViewHolder(
                     if(et_amount.inputType != TYPE_NUMBER) {
                         et_amount.removeTextChangedListener(listeners[1])
                         et_amount.inputType = TYPE_NUMBER
-                        et_amount.setText(MarketData.format(item.weight), TextView.BufferType.EDITABLE)
+                        et_amount.setText(format.format(item.weight), TextView.BufferType.EDITABLE)
                         et_amount.addTextChangedListener(listeners[2])
                     }
                     et_amount.unFreeze()
@@ -130,7 +133,7 @@ class MarketItemViewHolder(
     }
 
     fun setColor(color: Int) {
-        v_color.setBackgroundColor(MarketData.palette[color])
+        v_color.setBackgroundColor(adapter.palette[color])
     }
 
     fun setName(name: String) {
@@ -152,7 +155,7 @@ class MarketItemViewHolder(
     fun setWeight(weight: Float) {
         with(et_amount) {
             removeTextChangedListener(listeners[2])
-            setText(MarketData.format(weight), TextView.BufferType.EDITABLE)
+            setText(format.format(weight), TextView.BufferType.EDITABLE)
             addTextChangedListener(listeners[2])
         }
     }
@@ -160,7 +163,7 @@ class MarketItemViewHolder(
     fun setPrice(price: Float) {
         with(et_price) {
             removeTextChangedListener(listeners[3])
-            setText(MarketData.format(price), TextView.BufferType.EDITABLE)
+            setText(format.format(price), TextView.BufferType.EDITABLE)
             addTextChangedListener(listeners[3])
         }
     }
@@ -168,14 +171,14 @@ class MarketItemViewHolder(
     fun setCost(cost: Float) {
         with(et_cost) {
             removeTextChangedListener(listeners[4])
-            setText(MarketData.format(cost), TextView.BufferType.EDITABLE)
+            setText(format.format(cost), TextView.BufferType.EDITABLE)
             addTextChangedListener(listeners[4])
         }
     }
 
     fun setDiscrepancy(discrepancy: Float) {
         with(tv_discrepancy) {
-            text = MarketData.format(discrepancy)
+            text = format.format(discrepancy)
             setTextColor(ContextCompat.getColor(context,
                 if(discrepancy > -0.1f) R.color.correct
                 else R.color.wrong

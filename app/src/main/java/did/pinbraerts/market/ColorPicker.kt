@@ -7,6 +7,7 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 
 class ColorPicker: View {
     constructor(context: Context): super(context)
@@ -20,6 +21,8 @@ class ColorPicker: View {
     private var itemSize: Int = 0
     private var spacing: Int = 0
     private val paint: Paint = Paint()
+    private val palette
+        get() = ((parent as View).findViewById<RecyclerView>(R.id.rv_items).adapter as MarketItemAdapter).palette
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
@@ -30,16 +33,16 @@ class ColorPicker: View {
     }
 
     private fun recompute(minDim: Int, maxDim: Int) {
-        if(MarketData.palette.isEmpty()) {
+        if(palette.isEmpty()) {
             itemSize = 0
             spacing = 0
             return
         }
 
         itemSize = minDim
-        spacing = maxDim / MarketData.palette.size - itemSize
+        spacing = maxDim / palette.size - itemSize
         if(spacing < 0) {
-            itemSize = maxDim / MarketData.palette.size
+            itemSize = maxDim / palette.size
             spacing = 0
         }
     }
@@ -47,7 +50,7 @@ class ColorPicker: View {
     override fun onDraw(canvas: Canvas) {
         if(measuredWidth > measuredHeight) {
             var l = spacing / 2f
-            MarketData.palette.forEach {
+            palette.forEach {
                 paint.color = it
                 canvas.drawRect(l, 0f, l + itemSize, itemSize.toFloat(), paint)
                 l += spacing + itemSize
@@ -55,7 +58,7 @@ class ColorPicker: View {
         }
         else {
             var t = spacing / 2f
-            MarketData.palette.forEach {
+            palette.forEach {
                 paint.color = it
                 canvas.drawRect(0f, t, itemSize.toFloat(), t + itemSize, paint)
                 t += spacing + itemSize
@@ -68,7 +71,7 @@ class ColorPicker: View {
         when(event.action) {
             MotionEvent.ACTION_UP -> {
                 val i = (event.x / (itemSize + spacing)).toInt()
-                if(i < 0 || i >= MarketData.palette.size)
+                if(i < 0 || i >= palette.size)
                     return true
                 listener?.onColorPicked(i)
             }

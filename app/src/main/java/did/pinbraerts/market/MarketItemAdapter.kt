@@ -1,6 +1,5 @@
 package did.pinbraerts.market
 
-import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.view.LayoutInflater
@@ -32,7 +31,7 @@ class MarketItemAdapter(
 
                 sections.forEach {
                     parent.findViewHolderForAdapterPosition(it)?.let { vh ->
-                        paint.color = MarketData.palette[data[it].color]
+                        paint.color = palette[array[it].color]
                         val y = vh.itemView.y - 10
                         c.drawLine(left, y, right, y, paint)
                     }
@@ -224,7 +223,7 @@ class MarketItemAdapter(
     fun setState(newState: MainActivity.State) {
         activity.rv_items.visibleViewHolders().forEach {
             if(it is MarketItemViewHolder)
-                it.setState(newState, data[it.adapterPosition])
+                it.setState(newState, array[it.bindingAdapterPosition])
         }
     }
 

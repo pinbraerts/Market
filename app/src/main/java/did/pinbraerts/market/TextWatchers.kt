@@ -1,12 +1,7 @@
 package did.pinbraerts.market
 
-import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import java.text.NumberFormat
-import java.text.ParseException
 
 object TextWatchers {
     class PlainString(private val target: (String) -> Unit): TextWatcher {
@@ -49,7 +44,7 @@ object TextWatchers {
         }
 
         override fun afterTextChanged(e: Editable) {
-            target(MarketData.parse(e.toString()))
+            target(e.toString().toFloatOrZero())
         }
     }
 }

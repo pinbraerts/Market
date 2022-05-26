@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import java.text.DecimalFormat
 
 class MainActivity : AppCompatActivity(), SwipeDetector.SwipeListener {
     private class HeaderViewHolder(
@@ -76,17 +77,19 @@ class MainActivity : AppCompatActivity(), SwipeDetector.SwipeListener {
         var tv_summary_cost: TextView = ll_summary.findViewById(R.id.tv_summary_cost),
         var tv_summary_discrepancy: TextView = ll_summary.findViewById(R.id.tv_summary_discrepancy),
     ) {
+        private val format = DecimalFormat()
+
         var cost: Float = 0f
             set(value) {
                 field = value
-                tv_summary_cost.text = MarketData.format(value)
+                tv_summary_cost.text = format.format(value)
             }
 
         var discrepancy: Float = 0f
             set(value) {
                 field = value
                 tv_summary_discrepancy.apply {
-                    text = MarketData.format(value)
+                    text = format.format(value)
                     setTextColor(ContextCompat.getColor(context,
                         if (value > -0.1f) R.color.correct
                         else R.color.wrong
@@ -153,9 +156,8 @@ class MainActivity : AppCompatActivity(), SwipeDetector.SwipeListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        MarketData.loadPalette(this)
-
         itemsAdapter = MarketItemAdapter(this)
+        itemsAdapter.load()
 
         rv_items = findViewById(R.id.rv_items)
         rv_items.apply {
@@ -253,15 +255,13 @@ class MainActivity : AppCompatActivity(), SwipeDetector.SwipeListener {
 
     override fun onPause() {
         super.onPause()
-        MarketData.savePreferences(this, itemsAdapter.data)
         itemsAdapter.save()
     }
 
     override fun onResume() {
         super.onResume()
-        MarketData.loadPreferences(this)
-        MarketTouchHelper(itemsAdapter).attachToRecyclerView(rv_items)
         itemsAdapter.load()
+        MarketTouchHelper(itemsAdapter).attachToRecyclerView(rv_items)
     }
 
     override fun onSwipe(deltaX: Float, deltaY: Float) {
