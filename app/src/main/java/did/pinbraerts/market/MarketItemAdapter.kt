@@ -52,7 +52,7 @@ class MarketItemAdapter(
 
     override fun onColorPicked(color: Int) {
         focusedHolder?.let {
-            setColor(it.adapterPosition, color)
+            setColor(it.bindingAdapterPosition, color)
         }
     }
 

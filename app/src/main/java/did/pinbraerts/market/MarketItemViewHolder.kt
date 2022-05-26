@@ -26,19 +26,19 @@ class MarketItemViewHolder(
 
     private val listeners = arrayOf(
         TextWatchers.PlainString { newData ->
-            adapter.setName(adapterPosition, newData, false)
+            adapter.setName(bindingAdapterPosition, newData, false)
         },
         TextWatchers.PlainString { newData ->
-            adapter.setAmount(adapterPosition, newData, false)
+            adapter.setAmount(bindingAdapterPosition, newData, false)
         },
         TextWatchers.PlainNumber { newData ->
-            adapter.setWeight(adapterPosition, newData.toFloat(), false)
+            adapter.setWeight(bindingAdapterPosition, newData.toFloat(), false)
         },
         TextWatchers.PlainNumber { newData ->
-            adapter.setPrice(adapterPosition, newData.toFloat(), false)
+            adapter.setPrice(bindingAdapterPosition, newData.toFloat(), false)
         },
         TextWatchers.PlainNumber { newData ->
-            adapter.setCost(adapterPosition, newData.toFloat(), false)
+            adapter.setCost(bindingAdapterPosition, newData.toFloat(), false)
         }
     )
 

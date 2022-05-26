@@ -17,11 +17,11 @@ class MarketTouchHelper(private val adapter: MarketItemAdapter): ItemTouchHelper
         viewHolder1: RecyclerView.ViewHolder,
         viewHolder2: RecyclerView.ViewHolder
     ): Boolean {
-        adapter.move(viewHolder1.adapterPosition, viewHolder2.adapterPosition)
+        adapter.move(viewHolder1.bindingAdapterPosition, viewHolder2.bindingAdapterPosition)
         return true
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-        adapter.remove(viewHolder.adapterPosition)
+        adapter.removeAt(viewHolder.bindingAdapterPosition)
     }
 })
