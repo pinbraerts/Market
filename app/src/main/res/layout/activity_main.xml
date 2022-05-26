@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_margin="@dimen/big_margin"
+    android:animateLayoutChanges="true"
+    tools:context=".MainActivity">
+
+    <include layout="@layout/main_header"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_items"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:requiresFadingEdge="vertical"
+        tools:itemCount="20"
+        tools:listitem="@layout/market_item" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/one_pixel"
+        android:layout_margin="@dimen/small_margin"
+        android:background="@android:color/darker_gray" />
+
+    <include
+        layout="@layout/main_summary"
+        android:visibility="gone"
+    />
+
+    <include layout="@layout/main_actions"/>
+
+    <did.pinbraerts.market.ColorPicker
+        android:id="@+id/w_color_picker"
+        android:layout_margin="@dimen/small_margin"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/color_size"
+    />
+
+</LinearLayout>

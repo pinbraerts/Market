@@ -1,5 +1,7 @@
 package did.pinbraerts.market
 
+import java.io.Serializable
+
 data class MarketItem(
     var name: String = "",
     var amount: String = "",
@@ -7,48 +9,62 @@ data class MarketItem(
     var price: Float = 0f,
     var cost: Float = 0f,
     var color: Int = 0,
-) {
+): Serializable {
     val expectedCost
         get() = weight * price
 
     val discrepancy
         get() = expectedCost - cost
 
-    fun serialize() =
-        "${name}汉${weight}汉${price}汉${cost}汉${amount}汉${color}"
-
-    fun toClipboard() =
-        "$name : $weight * $price = $cost"
-
-    fun isValid() =
-        name.isNotBlank() or
-        amount.isNotBlank() or
-        (weight != 0f) or
-        (price != 0f) or
-        (cost != 0f)
+    override fun toString(): String =
+        when {
+            name.isNotEmpty() -> name
+            else -> ""
+        } + when {
+            weight == 0f -> ": $weight"
+            amount.isNotEmpty() -> ": $amount"
+            else -> ""
+        } + when(price) {
+            0f -> " * $price"
+            else -> ""
+        } + when(cost) {
+            0f -> " = $cost"
+            else -> ""
+        }
 
     companion object {
-        fun fromClipboard(s: String): MarketItem {
-            val v = s.trim().split(':')
+        fun from(s: String): MarketItem {
             val res = MarketItem()
+            var v = s.trim().split(':', limit = 2)
             if(v.isEmpty())
                 return res
             res.name = v[0].trim()
-            if(v.size > 1)
-                res.amount = v[1].trim()
-            return res
-        }
+            if(v.size < 2)
+                return res
 
-        fun deserialize(s: String): MarketItem {
-            val a = s.split('汉')
-            return MarketItem(
-                name = a.elementAtOrElse(0) { "" }.trim(),
-                weight = a.elementAtOrElse(1) { "" }.toFloatOrZero(),
-                price = a.elementAtOrElse(2) { "" }.toFloatOrZero(),
-                cost = a.elementAtOrElse(3) { "" }.toFloatOrZero(),
-                amount = a.elementAtOrElse(4) { "" }.trim(),
-                color = a.elementAtOrElse(5) { "" }.toIntOrZero(),
-            )
+            v = v[1].split('*', limit = 2)
+            if(v.isEmpty())
+                return res
+
+            val w = v[0].trim().toFloatOrNull()
+            if(w != null) res.weight = w
+            else res.amount = v[0].trim()
+
+            if(v.size < 2)
+                return res
+
+            v = v[1].split('=', limit = 2)
+            if(v.isEmpty())
+                return res
+            res.price = v[0].trim().toFloatOrZero()
+
+            if(v.size < 2)
+                return res
+            res.cost = v[1].trim().toFloatOrZero()
+
+            return res
         }
     }
 }
+
+typealias MarketItems = ArrayList<MarketItem>

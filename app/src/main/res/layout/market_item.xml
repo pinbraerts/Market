@@ -5,7 +5,8 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:layout_margin="@dimen/small_margin"
-    tools:showIn="@layout/activity_verify">
+    android:animateLayoutChanges="true"
+    tools:showIn="@layout/activity_main">
 
     <View
         android:id="@+id/v_color"
@@ -21,11 +22,11 @@
         android:layout_weight="0.1"
     />
 
-    <TextView
-        android:id="@+id/tv_name"
+    <EditText
+        android:id="@+id/et_name"
         style="@style/et_base"
-        android:gravity="start"
-        android:layout_weight="1.8"
+        android:layout_weight="4.7"
+        android:hint="@string/cheese"
         android:importantForAutofill="no"
         tools:text="@string/cheese"
     />
@@ -35,48 +36,56 @@
         style="@style/tv_divider"
     />
 
-    <TextView
-        android:id="@+id/tv_price"
-        style="@style/tv_base"
-        android:layout_weight="0.8"
-        android:importantForAutofill="no"
-        tools:text="10"
-    />
-
-    <TextView
-        android:text="@string/asterisk"
-        style="@style/tv_divider"
-    />
-
     <EditText
-        android:id="@+id/et_weight"
-        style="@style/et_number"
-        android:layout_weight="0.8"
+        android:id="@+id/et_amount"
+        style="@style/et_base"
+        android:layout_weight="1"
         android:importantForAutofill="no"
         android:hint="@string/zero"
         tools:text="10"
     />
 
     <TextView
-        android:text="@string/equals"
         style="@style/tv_divider"
+        android:id="@+id/tv_asterisk"
+        android:text="@string/asterisk"
+        android:visibility="gone"
+    />
+
+    <EditText
+        android:id="@+id/et_price"
+        style="@style/et_number"
+        android:layout_weight="0.8"
+        android:hint="@string/zero"
+        android:importantForAutofill="no"
+        android:visibility="gone"
+        tools:text="10"
     />
 
     <TextView
-        android:id="@+id/tv_cost"
-        style="@style/tv_base"
-        android:layout_weight="0.8"
-        android:importantForAutofill="no"
-        tools:text="10" />
+        style="@style/tv_divider"
+        android:id="@+id/tv_equals"
+        android:text="@string/equals"
+        android:visibility="gone"
+    />
 
-    <View style="@style/tv_divider" />
+    <EditText
+        style="@style/et_number"
+        android:id="@+id/et_cost"
+        android:layout_weight="0.9"
+        android:hint="@string/zero"
+        android:importantForAutofill="no"
+        android:visibility="gone"
+        tools:text="100"
+    />
 
     <TextView
         android:id="@+id/tv_discrepancy"
         style="@style/tv_base"
         android:text="@string/zero"
         android:textColor="@color/correct"
-        android:layout_weight="0.9"
+        android:layout_weight="1"
+        android:visibility="gone"
     />
 
 </LinearLayout>

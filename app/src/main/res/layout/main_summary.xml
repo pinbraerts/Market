@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_summary"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/small_margin"
+    android:animateLayoutChanges="true"
+    android:orientation="horizontal"
+    tools:showIn="@layout/activity_main">
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="7"
+        android:singleLine="true"
+        android:lines="1"
+        android:textSize="20sp"
+        android:textColor="@android:color/black"
+        android:text="@string/summary"
+    />
+
+    <TextView
+        android:id="@+id/tv_summary_cost"
+        style="@style/tv_base"
+        android:layout_weight="1"
+        android:text="@string/zero"
+    />
+
+    <TextView
+        android:id="@+id/tv_summary_discrepancy"
+        style="@style/tv_base"
+        android:layout_weight="1"
+        android:textColor="@color/correct"
+        android:text="@string/zero"
+        android:visibility="gone"
+    />
+
+</LinearLayout>

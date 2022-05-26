@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Рынок</string>
-    <string name="remove_all_title">Очистить список</string>
-    <string name="remove_all_message">Вы уверены?</string>
+    <string name="remove_all_title">Очистить список?</string>
+    <string name="remove_all_message">Удалить все продукты из списка?</string>
     <string name="popup_copied">Текст скопирован в буфер обмена</string>
     <string name="summary">Итого:</string>
     <string name="verify">верифицировать</string>
@@ -16,4 +16,6 @@
     <string name="weight_amount">вес/количество</string>
     <string name="discrepancy">неточность</string>
     <string name="cheese">сыр</string>
+    <string name="previous">предыдущий</string>
+    <string name="next">следующий</string>
 </resources>
