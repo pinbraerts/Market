@@ -10,15 +10,15 @@ import java.text.DecimalFormat
 
 class MarketItemViewHolder(
     view: View,
-    val adapter: MarketItemAdapter,
-    val v_color: View = view.findViewById(R.id.v_color),
-    val et_name: EditText = view.findViewById(R.id.et_name),
-    val et_amount: EditText = view.findViewById(R.id.et_amount),
-    val tv_asterisk: TextView = view.findViewById(R.id.tv_asterisk),
-    val et_cost: EditText = view.findViewById(R.id.et_cost),
-    val tv_equals: TextView = view.findViewById(R.id.tv_equals),
-    val et_price: EditText = view.findViewById(R.id.et_price),
-    val tv_discrepancy: TextView = view.findViewById(R.id.tv_discrepancy)
+    private val adapter: MarketItemAdapter,
+    private val v_color: View = view.findViewById(R.id.v_color),
+    private val et_name: EditText = view.findViewById(R.id.et_name),
+    private val et_amount: EditText = view.findViewById(R.id.et_amount),
+    private val tv_asterisk: TextView = view.findViewById(R.id.tv_asterisk),
+    private val et_cost: EditText = view.findViewById(R.id.et_cost),
+    private val tv_equals: TextView = view.findViewById(R.id.tv_equals),
+    private val et_price: EditText = view.findViewById(R.id.et_price),
+    private val tv_discrepancy: TextView = view.findViewById(R.id.tv_discrepancy)
 ): RecyclerView.ViewHolder(view) {
     companion object {
         const val TYPE_NUMBER = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
