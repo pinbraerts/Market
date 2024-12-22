@@ -6,3 +6,7 @@ A shopping list for market
 2. Automatic preferences
 3. Cost check
 4. Copy/Paste
+
+## Demo
+
+![demo](demo.gif)
