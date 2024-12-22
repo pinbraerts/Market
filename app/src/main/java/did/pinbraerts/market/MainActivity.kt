@@ -19,7 +19,6 @@ import java.text.DecimalFormat
 class MainActivity : AppCompatActivity(), SwipeDetector.SwipeListener {
     private class HeaderViewHolder(
         view: View,
-        val ib_weight: ImageButton = view.findViewById(R.id.ib_weight),
         val ib_price: ImageButton = view.findViewById(R.id.ib_price),
         val ib_cost: ImageButton = view.findViewById(R.id.ib_cost),
         val ib_discrepancy: ImageButton = view.findViewById(R.id.ib_discrepancy),
