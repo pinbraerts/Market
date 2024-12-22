@@ -214,10 +214,10 @@ class MainActivity : AppCompatActivity(), SwipeDetector.SwipeListener {
                 AlertDialog.Builder(this@MainActivity)
                     .setTitle(getString(R.string.remove_all_title))
                     .setMessage(getString(R.string.remove_all_message))
-                    .setPositiveButton(android.R.string.yes) { _: DialogInterface, _: Int ->
+                    .setPositiveButton(android.R.string.ok) { _: DialogInterface, _: Int ->
                         itemsAdapter.clear()
                     }
-                    .setNegativeButton(android.R.string.no, null)
+                    .setNegativeButton(android.R.string.cancel, null)
                     .show()
             }
         }

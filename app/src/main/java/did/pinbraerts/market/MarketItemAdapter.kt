@@ -220,12 +220,10 @@ class MarketItemAdapter(
             palette = activity.resources.getIntArray(R.array.user_palette)
 
         scope.launch {
-            dbHelper.readableDatabase.use {
-                dbHelper.readPreferences(colorPreferences::plusAssign)
-                dbHelper.readSnapshot {
-                    activity.runOnUiThread {
-                        add(it)
-                    }
+            dbHelper.readPreferences(colorPreferences::plusAssign)
+            dbHelper.readSnapshot {
+                activity.runOnUiThread {
+                    add(it)
                 }
             }
             dbHelper.writableDatabase.use {
